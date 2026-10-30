@@ -2,8 +2,12 @@ Package: hexamap
 Title: Hexagonal Heatmaps for Age-Period-Cohort Data
 Version: 0.1.0
 Authors@R: c(
-    person("Hawre", "Jalal", , "hjalal@uottawa.ca", role = "aut"),
-    person("Fernando", "Alarid-Escudero", , "falarid@stanford.edu", role = c("aut", "cre"))
+    person("Hawre", "Jalal", , "hjalal@uottawa.ca", role = "aut",
+           comment = c(ORCID = "0000-0002-8224-6834")),
+    person("Fernando", "Alarid-Escudero", , "falarid@stanford.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-5076-1172")),
+    person("National Cancer Institute", role = "fnd",
+           comment = "CISNET grants U01CA319218, U01CA319117 and U01CA319219")
   )
 Description: Visualize age-period-cohort (APC) data with hexamaps, a field
     of hexagonal tiles that places the age, period and cohort axes at equal
