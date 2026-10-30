@@ -2,7 +2,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @importFrom graphics lines par plot polygon text title
+#' @importFrom graphics lines par plot polygon rect text title
 #' @importFrom grDevices colorRampPalette
 #' @importFrom stats quantile
 #' @importFrom utils tail
