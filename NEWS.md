@@ -1,3 +1,8 @@
+# hexamap 0.1.1
+
+* Added GitHub Actions R CMD check on macOS, Windows and Ubuntu
+  (R release, devel and oldrel-1).
+
 # hexamap 0.1.0
 
 * Initial package skeleton. `hexamap()` is the general version of the
