@@ -1,0 +1,25 @@
+Package: hexamap
+Title: Hexagonal Heatmaps for Age-Period-Cohort Data
+Version: 0.1.0
+Authors@R: c(
+    person("Hawre", "Jalal", , "hjalal@uottawa.ca", role = "aut"),
+    person("Fernando", "Alarid-Escudero", , "falarid@stanford.edu", role = c("aut", "cre"))
+  )
+Description: Visualize age-period-cohort (APC) data with hexamaps, a field
+    of hexagonal tiles that places the age, period and cohort axes at equal
+    60 degree angles. Unlike the traditional Lexis diagram, a hexamap does not
+    compress patterns between adjacent cohorts or stretch patterns within a
+    cohort, and adjacent tiles along every axis share a full edge. Implements
+    the method described in Jalal and Burke (2020)
+    <doi:10.1097/EDE.0000000000001236>.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Depends:
+    R (>= 3.6.0)
+Imports:
+    graphics,
+    grDevices,
+    stats,
+    utils
+Config/roxygen2/version: 8.0.0
