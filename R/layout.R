@@ -11,8 +11,9 @@
 #' @return An object of class `hexamap_layout`, a list with:
 #'   \describe{
 #'     \item{`cells`}{Data frame with one row per age-period cell: `age`,
-#'       `period`, `cohort`, `value`, tile center `x` and `y`, and fill
-#'       `color` (`NA` for cells that are not drawn).}
+#'       `period`, `cohort`, `value`, tile center `x` and `y`, fill `color`
+#'       (`NA` for cells that are not drawn), and `fraction`, the position of
+#'       the value along the color scale from 0 to 1.}
 #'     \item{`tiles`}{`"hexagon"` or `"square"`.}
 #'     \item{`tile`}{List with the `x` and `y` offsets of the tile vertices
 #'       relative to its center.}
@@ -120,6 +121,8 @@ hexamap_layout <- function(data,
                                      length(color_map))
   cells$color <- NA_character_
   cells$color[is_drawn] <- color_map[color_index]
+  cells$fraction <- NA_real_
+  cells$fraction[is_drawn] <- scale_fraction(values, colorbar_range, colorbar_scale)
 
   ticks <- colorbar_ticks(values, colorbar_range, colorbar_scale, midpoint)
 

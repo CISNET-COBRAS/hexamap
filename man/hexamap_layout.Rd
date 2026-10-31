@@ -81,8 +81,9 @@ Lexis diagram, with periods on the x axis and ages on the y axis.}
 An object of class \code{hexamap_layout}, a list with:
 \describe{
 \item{\code{cells}}{Data frame with one row per age-period cell: \code{age},
-\code{period}, \code{cohort}, \code{value}, tile center \code{x} and \code{y}, and fill
-\code{color} (\code{NA} for cells that are not drawn).}
+\code{period}, \code{cohort}, \code{value}, tile center \code{x} and \code{y}, fill \code{color}
+(\code{NA} for cells that are not drawn), and \code{fraction}, the position of
+the value along the color scale from 0 to 1.}
 \item{\code{tiles}}{\code{"hexagon"} or \code{"square"}.}
 \item{\code{tile}}{List with the \code{x} and \code{y} offsets of the tile vertices
 relative to its center.}

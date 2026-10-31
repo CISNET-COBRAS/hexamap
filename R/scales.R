@@ -135,6 +135,22 @@ compute_color_index <- function(values, limits, scale, n) {
 }
 
 #' @rdname resolve_scale
+#' @return `scale_fraction()` returns, for each value, its position along the
+#'   color scale, from 0 (lower limit) to 1 (upper limit). For quantile
+#'   scales this is the share of values at or below it.
+#' @noRd
+scale_fraction <- function(values, limits, scale) {
+  if (limits[1] == limits[2]) {
+    return(rep(0.5, length(values)))
+  }
+  switch(scale,
+    linear = (values - limits[1]) / (limits[2] - limits[1]),
+    log = (log(values) - log(limits[1])) / (log(limits[2]) - log(limits[1])),
+    quantile = stats::ecdf(values)(values)
+  )
+}
+
+#' @rdname resolve_scale
 #' @return `colorbar_ticks()` returns a data frame with the tick `value`s and
 #'   their `fraction` of the colorbar height, from 0 (bottom) to 1 (top).
 #'   Linear and log scales get round values within the limits (and the

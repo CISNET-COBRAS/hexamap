@@ -1,3 +1,15 @@
+# hexamap 0.6.0
+
+## New features
+
+* New `gg_hexamap()` draws hexamaps and Lexis diagrams with 'ggplot2'
+  (in Suggests). It returns a ggplot object that can be modified with
+  `labs()`, `theme()` and other ggplot2 functions. A named list of matrices
+  gives one panel per element, with a shared color scale.
+* New `autoplot()` method for `hexamap_layout` objects.
+* `hexamap_layout()` cells gain a `fraction` column with each value's
+  position along the color scale.
+
 # hexamap 0.5.0
 
 ## New features
