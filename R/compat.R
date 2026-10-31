@@ -2,11 +2,14 @@
 #'
 #' Wrapper around [hexamap()] that keeps the argument names used in the
 #' eAppendix of Jalal and Burke (2020), so published code runs unchanged.
-#' New code should call [hexamap()] directly.
+#' It uses the "jet" palette of the paper by default. New code should call
+#' [hexamap()] directly.
 #'
 #' @inheritParams hexamap
 #' @param color_scale Numeric vector of length 2 with the lower and upper
 #'   limits of the color scale. Passed to `colorbar_range` in [hexamap()].
+#' @param palette Palette name passed to [hexamap()]. Defaults to `"jet"`,
+#'   as in the paper.
 #' @param ... Further arguments passed to [hexamap()].
 #'
 #' @return The `hexamap_layout` object returned by [hexamap_layout()],
@@ -27,11 +30,13 @@ create_hexamap <- function(data,
                            first_period,
                            interval,
                            color_scale = NULL,
+                           palette = "jet",
                            ...) {
   hexamap(data = data,
           first_age = first_age,
           first_period = first_period,
           interval = interval,
           colorbar_range = color_scale,
+          palette = palette,
           ...)
 }

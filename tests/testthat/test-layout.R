@@ -67,6 +67,21 @@ test_that("layouts print a summary", {
   expect_snapshot(print(hexamap_layout(rates, 15, 1999, 1, colorbar_range = c(0, 40))))
 })
 
+test_that("the default palette is jet, or diverging with a midpoint", {
+  rates <- example_rates()
+  expect_equal(hexamap_layout(rates, 15, 1999, 1)$scale$colors,
+               hexamap_palette("jet", 100))
+  lay <- hexamap_layout(rates / mean(rates), 15, 1999, 1,
+                        colorbar_scale = "log", midpoint = 1)
+  expect_equal(lay$scale$colors, hexamap_palette("Blue-Red 3", 100))
+  expect_equal(prod(lay$scale$limits), 1) # symmetric around 1 on the log scale
+  # color_map overrides palette
+  expect_equal(hexamap_layout(rates, 15, 1999, 1, color_map = c("red", "blue"),
+                              palette = "jet")$scale$colors,
+               c("red", "blue"))
+  expect_length(hexamap_layout(rates, 15, 1999, 1, n_colors = 12)$scale$colors, 12)
+})
+
 test_that("an empty color_map is rejected", {
   expect_error(hexamap_layout(example_rates(), 15, 1999, 1, color_map = character()),
                "at least one color")

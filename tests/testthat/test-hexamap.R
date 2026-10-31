@@ -45,6 +45,27 @@ test_that("a device too small for the labels gives a clear error", {
   expect_error(hexamap(example_rates(), 15, 1999, 1), "too small")
 })
 
+test_that("missing cells, borders and palettes can be styled", {
+  local_null_device()
+  rates <- example_rates()
+  rates[1:5, 1:3] <- NA
+  expect_no_error(hexamap(rates, 15, 1999, 1, na_color = "pink",
+                          na_label = "Suppressed"))
+  expect_no_error(hexamap(rates, 15, 1999, 1, na_color = NA))
+  expect_no_error(hexamap(rates, 15, 1999, 1, hex_border = "white",
+                          hex_border_width = 1))
+  expect_no_error(hexamap(rates, 15, 1999, 1, hex_border = NA))
+  expect_no_error(hexamap(rates, 15, 1999, 1, palette = "Inferno"))
+  expect_error(hexamap(rates, 15, 1999, 1, na_color = c("a", "b")),
+               "single color")
+})
+
+test_that("create_hexamap() uses the paper's jet palette", {
+  local_null_device()
+  lay <- create_hexamap(example_rates(), 15, 1999, 1, color_scale = c(0, 40))
+  expect_equal(lay$scale$colors, hexamap_palette("jet", 100))
+})
+
 test_that("the colorbar can be turned off", {
   local_null_device()
   expect_no_error(hexamap(example_rates(), 15, 1999, 1, legend = FALSE))

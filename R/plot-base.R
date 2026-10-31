@@ -16,6 +16,15 @@
 #' @param colorbar_width Width of the colorbar, in inches.
 #' @param colorbar_height Height of the colorbar, as a fraction of the
 #'   height of the hexamap.
+#' @param na_color Color of cells with missing values (for example,
+#'   suppressed counts). `NA` leaves them blank.
+#' @param na_label Label of the missing-value key shown below the colorbar
+#'   when some cells are missing.
+#' @param hex_border Color of the hexagon borders. The default, `"fill"`,
+#'   draws each border in the hexagon's own color, which avoids the thin
+#'   white seams that many viewers show between adjacent tiles. Use `NA` for
+#'   no border, or a color such as `"white"` to outline the tiles.
+#' @param hex_border_width Line width of the hexagon borders.
 #' @param ... Not used.
 #' @return `x`, invisibly.
 #' @export
@@ -35,8 +44,17 @@ plot.hexamap_layout <- function(x,
                                 legend = TRUE,
                                 colorbar_width = 0.15,
                                 colorbar_height = 0.5,
+                                na_color = "grey90",
+                                na_label = "Missing",
+                                hex_border = "fill",
+                                hex_border_width = 0.5,
                                 ...) {
   check_number(label_size, "label_size", positive = TRUE)
+  check_number(hex_border_width, "hex_border_width")
+  if (length(na_color) != 1 || length(hex_border) != 1) {
+    stop("`na_color` and `hex_border` must be a single color.", call. = FALSE)
+  }
+  show_na_key <- legend && !is.na(na_color) && anyNA(x$cells$color)
   check_number(line_width, "line_width")
   check_flag(legend, "legend")
   check_number(colorbar_width, "colorbar_width", positive = TRUE)
@@ -52,15 +70,19 @@ plot.hexamap_layout <- function(x,
 
   labels <- isoline_labels(x)
   ticks <- tick_labels(x)
+  if (show_na_key) {
+    ticks$na <- na_label
+  }
   space <- label_space(x, labels, ticks, label_size * par("cex"), legend,
                        colorbar_width, scale_units)
   fit_plot_window(x$extent, space$margins)
 
-  draw_hexagons(x)
+  draw_hexagons(x, na_color, hex_border, hex_border_width)
   draw_isolines(x, labels, line_color, line_width, label_color, label_size)
   if (legend) {
     draw_colorbar(x, ticks, space, colorbar_width, colorbar_height,
-                  scale_units, line_width, label_color, label_size)
+                  scale_units, line_width, label_color, label_size,
+                  na_color)
   }
 
   if (has_title) {
@@ -116,7 +138,7 @@ label_space <- function(x, labels, ticks, cex, legend, colorbar_width,
     tick <- 0.05
     percent_w <- if (length(ticks$percent)) width(ticks$percent) + tick + pad else 0
     bar_start <- right + gap + percent_w
-    block <- percent_w + colorbar_width + tick + pad + width(ticks$value)
+    block <- percent_w + colorbar_width + tick + pad + width(c(ticks$value, ticks$na))
     title_overhang <- percent_w + (colorbar_width + width(scale_units)) / 2
     space$bar_start <- bar_start
     space$margins[["right"]] <- right + gap + max(block, title_overhang) + pad
@@ -150,14 +172,17 @@ fit_plot_window <- function(extent, margins) {
   invisible(upi)
 }
 
-draw_hexagons <- function(x) {
-  drawn <- !is.na(x$cells$color)
+draw_hexagons <- function(x, na_color, hex_border, hex_border_width) {
+  colors <- x$cells$color
+  colors[is.na(colors)] <- na_color
+  drawn <- !is.na(colors)
+  border <- if (identical(hex_border, "fill")) colors[drawn] else hex_border
   hex_x <- outer(x$cells$x[drawn], x$hexagon$x, "+")
   hex_y <- outer(x$cells$y[drawn], x$hexagon$y, "+")
   # one polygon() call, with hexagons separated by NA
   polygon(x = as.vector(t(cbind(hex_x, NA))),
           y = as.vector(t(cbind(hex_y, NA))),
-          col = x$cells$color[drawn], border = NA)
+          col = colors[drawn], border = border, lwd = hex_border_width)
 }
 
 draw_isolines <- function(x, labels, line_color, line_width, label_color,
@@ -177,7 +202,7 @@ draw_isolines <- function(x, labels, line_color, line_width, label_color,
 
 draw_colorbar <- function(x, ticks, space, colorbar_width,
                           colorbar_height, scale_units, line_width,
-                          label_color, label_size) {
+                          label_color, label_size, na_color) {
   # user units per inch, as set by plot.window() (asp = 1 can widen one axis)
   upi <- diff(par("usr")[1:2]) / par("pin")[1]
   colors <- x$scale$colors
@@ -208,5 +233,15 @@ draw_colorbar <- function(x, ticks, space, colorbar_width,
                        col = label_color, lwd = line_width)
     text(x = cb_x1 - tick - 0.05 * upi, y = tick_y, labels = ticks$percent,
          col = label_color, cex = label_size, adj = c(1, 0.5))
+  }
+
+  # missing-value key below the colorbar
+  if (length(ticks$na)) {
+    key_y2 <- cb_y1 - 0.15 * upi
+    key_y1 <- key_y2 - colorbar_width * upi
+    rect(xleft = cb_x1, ybottom = key_y1, xright = cb_x2, ytop = key_y2,
+         col = na_color, border = NA)
+    text(x = cb_x2 + tick + 0.05 * upi, y = (key_y1 + key_y2) / 2,
+         labels = ticks$na, col = label_color, cex = label_size, adj = c(0, 0.5))
   }
 }

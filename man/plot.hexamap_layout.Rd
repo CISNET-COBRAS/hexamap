@@ -16,6 +16,10 @@
   legend = TRUE,
   colorbar_width = 0.15,
   colorbar_height = 0.5,
+  na_color = "grey90",
+  na_label = "Missing",
+  hex_border = "fill",
+  hex_border_width = 0.5,
   ...
 )
 }
@@ -38,6 +42,19 @@ labels.}
 
 \item{colorbar_height}{Height of the colorbar, as a fraction of the
 height of the hexamap.}
+
+\item{na_color}{Color of cells with missing values (for example,
+suppressed counts). \code{NA} leaves them blank.}
+
+\item{na_label}{Label of the missing-value key shown below the colorbar
+when some cells are missing.}
+
+\item{hex_border}{Color of the hexagon borders. The default, \code{"fill"},
+draws each border in the hexagon's own color, which avoids the thin
+white seams that many viewers show between adjacent tiles. Use \code{NA} for
+no border, or a color such as \code{"white"} to outline the tiles.}
+
+\item{hex_border_width}{Line width of the hexagon borders.}
 
 \item{...}{Not used.}
 }
