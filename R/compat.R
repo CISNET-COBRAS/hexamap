@@ -9,8 +9,8 @@
 #'   limits of the color scale. Passed to `colorbar_range` in [hexamap()].
 #' @param ... Further arguments passed to [hexamap()].
 #'
-#' @return Called for its side effect of drawing on the current device;
-#'   returns `NULL` invisibly.
+#' @return The `hexamap_layout` object returned by [hexamap_layout()],
+#'   invisibly.
 #' @export
 #' @examples
 #' rates <- outer(15:70, 1999:2018, function(a, p) (a - 10) * (p - 1990) / 40)
