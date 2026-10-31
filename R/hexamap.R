@@ -29,8 +29,15 @@
 #' @param colorbar_scale How colors are mapped to values: `"linear"`, `"log"`
 #'   or `"quantile"` (each color covers the same share of cells). The names
 #'   `"Normal"` and `"Percentile"` used in earlier versions are also accepted.
-#' @param color_map Vector of colors from low to high. Defaults to a 100-color
-#'   "jet" palette.
+#' @param color_map Vector of colors from low to high. Overrides `palette`.
+#' @param palette Name of a palette passed to [hexamap_palette()], used when
+#'   `color_map` is `NULL`. Defaults to `"viridis"`, or to the diverging
+#'   `"Blue-Red 3"` when `midpoint` is set. Use `"jet"` for the palette of
+#'   Jalal and Burke (2020).
+#' @param n_colors Number of colors taken from `palette`.
+#' @param midpoint Value at the center of a diverging color scale, such as 1
+#'   for rate ratios on a log scale or 0 for differences. The color limits
+#'   are made symmetric around it.
 #' @param wrap_cohort_labels Logical; whether cohort labels wrap around the
 #'   bottom edge of the hexamap.
 #' @inheritParams plot.hexamap_layout
@@ -53,6 +60,11 @@
 #' # ages and periods can also come from the dimnames
 #' dimnames(rates) <- list(ages, periods)
 #' hexamap(rates, isoline_interval = 10, title_text = "Simulated rates")
+#'
+#' # a diverging scale for rate ratios relative to 2008
+#' ratios <- rates / rates[, "2008"]
+#' hexamap(ratios, isoline_interval = 10, colorbar_scale = "log",
+#'         midpoint = 1, scale_units = "Rate ratio")
 hexamap <- function(data,
                     first_age = NULL,
                     first_period = NULL,
@@ -67,12 +79,19 @@ hexamap <- function(data,
                     title_text = NULL,
                     subtitle_text = NULL,
                     color_map = NULL,
+                    palette = NULL,
+                    n_colors = 100,
+                    midpoint = NULL,
                     line_width = .5,
                     line_color = "grey",
                     label_size = .5,
                     label_color = "black",
                     scale_units = "Rate",
                     legend = TRUE,
+                    na_color = "grey90",
+                    na_label = "Missing",
+                    hex_border = "fill",
+                    hex_border_width = 0.5,
                     zoom_factor = NULL,
                     wrap_cohort_labels = TRUE) {
   if (!is.null(zoom_factor)) {
@@ -89,6 +108,9 @@ hexamap <- function(data,
                            colorbar_range = colorbar_range,
                            colorbar_scale = colorbar_scale,
                            color_map = color_map,
+                           palette = palette,
+                           n_colors = n_colors,
+                           midpoint = midpoint,
                            wrap_cohort_labels = wrap_cohort_labels)
   plot(layout,
        title_text = title_text,
@@ -100,5 +122,9 @@ hexamap <- function(data,
        scale_units = scale_units,
        legend = legend,
        colorbar_width = colorbar_width,
-       colorbar_height = colorbar_height)
+       colorbar_height = colorbar_height,
+       na_color = na_color,
+       na_label = na_label,
+       hex_border = hex_border,
+       hex_border_width = hex_border_width)
 }

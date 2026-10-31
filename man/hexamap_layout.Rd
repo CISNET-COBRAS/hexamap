@@ -15,6 +15,9 @@ hexamap_layout(
   colorbar_range = NULL,
   colorbar_scale = "linear",
   color_map = NULL,
+  palette = NULL,
+  n_colors = 100,
+  midpoint = NULL,
   wrap_cohort_labels = TRUE
 )
 }
@@ -46,8 +49,18 @@ range of \code{data}.}
 or \code{"quantile"} (each color covers the same share of cells). The names
 \code{"Normal"} and \code{"Percentile"} used in earlier versions are also accepted.}
 
-\item{color_map}{Vector of colors from low to high. Defaults to a 100-color
-"jet" palette.}
+\item{color_map}{Vector of colors from low to high. Overrides \code{palette}.}
+
+\item{palette}{Name of a palette passed to \code{\link[=hexamap_palette]{hexamap_palette()}}, used when
+\code{color_map} is \code{NULL}. Defaults to \code{"viridis"}, or to the diverging
+\code{"Blue-Red 3"} when \code{midpoint} is set. Use \code{"jet"} for the palette of
+Jalal and Burke (2020).}
+
+\item{n_colors}{Number of colors taken from \code{palette}.}
+
+\item{midpoint}{Value at the center of a diverging color scale, such as 1
+for rate ratios on a log scale or 0 for differences. The color limits
+are made symmetric around it.}
 
 \item{wrap_cohort_labels}{Logical; whether cohort labels wrap around the
 bottom edge of the hexamap.}
@@ -63,8 +76,9 @@ vertices relative to its center.}
 \item{\code{isolines}}{List of data frames \code{age}, \code{period} and \code{cohort},
 each with the isoline \code{value} and segment ends \code{x1}, \code{y1}, \code{x2},
 \code{y2}.}
-\item{\code{scale}}{List with the scale \code{type}, \code{limits}, \code{colors} and
-colorbar \code{ticks} (data frame with \code{fraction} and \code{value}).}
+\item{\code{scale}}{List with the scale \code{type}, \code{limits}, \code{midpoint},
+\code{colors} and colorbar \code{ticks} (data frame with \code{fraction} and
+\code{value}).}
 \item{\code{dims}}{List with the first and last age and period, and the
 \code{interval}.}
 \item{\code{extent}}{Numeric vector \code{xmin}, \code{xmax}, \code{ymin}, \code{ymax} covering

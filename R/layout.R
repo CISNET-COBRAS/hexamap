@@ -16,8 +16,9 @@
 #'     \item{`isolines`}{List of data frames `age`, `period` and `cohort`,
 #'       each with the isoline `value` and segment ends `x1`, `y1`, `x2`,
 #'       `y2`.}
-#'     \item{`scale`}{List with the scale `type`, `limits`, `colors` and
-#'       colorbar `ticks` (data frame with `fraction` and `value`).}
+#'     \item{`scale`}{List with the scale `type`, `limits`, `midpoint`,
+#'       `colors` and colorbar `ticks` (data frame with `fraction` and
+#'       `value`).}
 #'     \item{`dims`}{List with the first and last age and period, and the
 #'       `interval`.}
 #'     \item{`extent`}{Numeric vector `xmin`, `xmax`, `ymin`, `ymax` covering
@@ -41,6 +42,9 @@ hexamap_layout <- function(data,
                            colorbar_range = NULL,
                            colorbar_scale = "linear",
                            color_map = NULL,
+                           palette = NULL,
+                           n_colors = 100,
+                           midpoint = NULL,
                            wrap_cohort_labels = TRUE) {
 
   # check inputs and set default values for missing parameters
@@ -72,10 +76,10 @@ hexamap_layout <- function(data,
          " and ", dims$last_period, ".", call. = FALSE)
   }
   if (is.null(color_map)) {
-    # define jet colormap
-    jet_colors <- colorRampPalette(c("black", "#00007F", "blue", "#007FFF", "cyan",
-                                     "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
-    color_map <- jet_colors(100)
+    if (is.null(palette)) { # diverging palette for scales with a midpoint
+      palette <- if (is.null(midpoint)) "viridis" else "Blue-Red 3"
+    }
+    color_map <- hexamap_palette(palette, n_colors)
   }
   if (length(color_map) < 1) {
     stop("`color_map` must have at least one color.", call. = FALSE)
@@ -98,19 +102,15 @@ hexamap_layout <- function(data,
     stop("`data` has no finite values to plot.", call. = FALSE)
   }
   values <- cells$value[is_drawn]
-  colorbar_range <- resolve_limits(colorbar_range, values, colorbar_scale)
+  colorbar_range <- resolve_limits(colorbar_range, values, colorbar_scale,
+                                   midpoint)
   values <- pmin(pmax(values, colorbar_range[1]), colorbar_range[2])
   color_index <- compute_color_index(values, colorbar_range, colorbar_scale,
                                      length(color_map))
   cells$color <- NA_character_
   cells$color[is_drawn] <- color_map[color_index]
 
-  tick_fractions <- seq(0, 1, length.out = 11)
-  ticks <- data.frame(
-    fraction = tick_fractions,
-    value = colorbar_tick_values(values, colorbar_range, colorbar_scale,
-                                 tick_fractions)
-  )
+  ticks <- colorbar_ticks(values, colorbar_range, colorbar_scale, midpoint)
 
   isolines <- compute_isolines(dims, first_age_isoline, first_period_isoline,
                                isoline_interval, wrap_cohort_labels)
@@ -128,7 +128,7 @@ hexamap_layout <- function(data,
          hexagon = hexagon,
          isolines = isolines,
          scale = list(type = colorbar_scale, limits = colorbar_range,
-                      colors = color_map, ticks = ticks),
+                      midpoint = midpoint, colors = color_map, ticks = ticks),
          dims = dims[c("first_age", "last_age", "first_period",
                        "last_period", "interval")],
          extent = extent),

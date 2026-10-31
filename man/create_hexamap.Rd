@@ -10,6 +10,7 @@ create_hexamap(
   first_period,
   interval,
   color_scale = NULL,
+  palette = "jet",
   ...
 )
 }
@@ -30,6 +31,9 @@ or 1.}
 \item{color_scale}{Numeric vector of length 2 with the lower and upper
 limits of the color scale. Passed to \code{colorbar_range} in \code{\link[=hexamap]{hexamap()}}.}
 
+\item{palette}{Palette name passed to \code{\link[=hexamap]{hexamap()}}. Defaults to \code{"jet"},
+as in the paper.}
+
 \item{...}{Further arguments passed to \code{\link[=hexamap]{hexamap()}}.}
 }
 \value{
@@ -39,7 +43,8 @@ invisibly.
 \description{
 Wrapper around \code{\link[=hexamap]{hexamap()}} that keeps the argument names used in the
 eAppendix of Jalal and Burke (2020), so published code runs unchanged.
-New code should call \code{\link[=hexamap]{hexamap()}} directly.
+It uses the "jet" palette of the paper by default. New code should call
+\code{\link[=hexamap]{hexamap()}} directly.
 }
 \examples{
 rates <- outer(15:70, 1999:2018, function(a, p) (a - 10) * (p - 1990) / 40)

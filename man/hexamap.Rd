@@ -19,12 +19,19 @@ hexamap(
   title_text = NULL,
   subtitle_text = NULL,
   color_map = NULL,
+  palette = NULL,
+  n_colors = 100,
+  midpoint = NULL,
   line_width = 0.5,
   line_color = "grey",
   label_size = 0.5,
   label_color = "black",
   scale_units = "Rate",
   legend = TRUE,
+  na_color = "grey90",
+  na_label = "Missing",
+  hex_border = "fill",
+  hex_border_width = 0.5,
   zoom_factor = NULL,
   wrap_cohort_labels = TRUE
 )
@@ -65,8 +72,18 @@ height of the hexamap.}
 \item{title_text, subtitle_text}{Title and subtitle, drawn above the
 hexamap. \code{NULL} or \code{""} for none.}
 
-\item{color_map}{Vector of colors from low to high. Defaults to a 100-color
-"jet" palette.}
+\item{color_map}{Vector of colors from low to high. Overrides \code{palette}.}
+
+\item{palette}{Name of a palette passed to \code{\link[=hexamap_palette]{hexamap_palette()}}, used when
+\code{color_map} is \code{NULL}. Defaults to \code{"viridis"}, or to the diverging
+\code{"Blue-Red 3"} when \code{midpoint} is set. Use \code{"jet"} for the palette of
+Jalal and Burke (2020).}
+
+\item{n_colors}{Number of colors taken from \code{palette}.}
+
+\item{midpoint}{Value at the center of a diverging color scale, such as 1
+for rate ratios on a log scale or 0 for differences. The color limits
+are made symmetric around it.}
 
 \item{line_width, line_color}{Width and color of the isolines.}
 
@@ -76,6 +93,19 @@ labels.}
 \item{scale_units}{Text displayed above the colorbar.}
 
 \item{legend}{Logical; whether to draw the colorbar.}
+
+\item{na_color}{Color of cells with missing values (for example,
+suppressed counts). \code{NA} leaves them blank.}
+
+\item{na_label}{Label of the missing-value key shown below the colorbar
+when some cells are missing.}
+
+\item{hex_border}{Color of the hexagon borders. The default, \code{"fill"},
+draws each border in the hexagon's own color, which avoids the thin
+white seams that many viewers show between adjacent tiles. Use \code{NA} for
+no border, or a color such as \code{"white"} to outline the tiles.}
+
+\item{hex_border_width}{Line width of the hexagon borders.}
 
 \item{zoom_factor}{Deprecated and ignored: hexamaps now fit the plotting
 region.}
@@ -109,6 +139,11 @@ hexamap(rates, first_age = 15, first_period = 1999, interval = 1,
 # ages and periods can also come from the dimnames
 dimnames(rates) <- list(ages, periods)
 hexamap(rates, isoline_interval = 10, title_text = "Simulated rates")
+
+# a diverging scale for rate ratios relative to 2008
+ratios <- rates / rates[, "2008"]
+hexamap(ratios, isoline_interval = 10, colorbar_scale = "log",
+        midpoint = 1, scale_units = "Rate ratio")
 }
 \references{
 Jalal H, Burke DS. Hexamaps for age-period-cohort data
