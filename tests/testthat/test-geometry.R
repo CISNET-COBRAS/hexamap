@@ -27,3 +27,14 @@ test_that("isolines meet at 60 degree angles", {
   expect_equal(angle(0, 1), 90)  # period isoline: fixed period, age increases
   expect_equal(angle(1, 1), 30)  # cohort isoline: age and period increase
 })
+
+test_that("square tiles use period on x and age on y with 45 degree cohorts", {
+  xy <- apc_to_xy(age = c(40, 41, 41), period = c(2000, 2000, 2001), tiles = "square")
+  expect_equal(xy, list(x = c(2000, 2000, 2001), y = c(40, 41, 41)))
+  expect_equal(isoline_angles("square"), c(age = 0, period = 90, cohort = 45))
+  sq <- tile_vertices(5, "square")
+  expect_equal(range(sq$x), c(-2.5, 2.5))
+  # zero-length inputs stay zero-length
+  expect_length(apc_xy(2000, numeric(0), "square")$x, 0)
+  expect_length(apc_xy(2000, numeric(0), "hexagon")$x, 0)
+})

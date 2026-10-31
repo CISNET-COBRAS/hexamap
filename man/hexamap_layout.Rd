@@ -19,7 +19,8 @@ hexamap_layout(
   n_colors = 100,
   midpoint = NULL,
   isolines = c("age", "period", "cohort"),
-  wrap_cohort_labels = TRUE
+  wrap_cohort_labels = TRUE,
+  tiles = c("hexagon", "square")
 )
 }
 \arguments{
@@ -72,15 +73,19 @@ are made symmetric around it.}
 
 \item{wrap_cohort_labels}{Logical; whether cohort labels wrap around the
 bottom edge of the hexamap.}
+
+\item{tiles}{\code{"hexagon"} for a hexamap or \code{"square"} for a traditional
+Lexis diagram, with periods on the x axis and ages on the y axis.}
 }
 \value{
 An object of class \code{hexamap_layout}, a list with:
 \describe{
 \item{\code{cells}}{Data frame with one row per age-period cell: \code{age},
-\code{period}, \code{cohort}, \code{value}, hexagon center \code{x} and \code{y}, and fill
+\code{period}, \code{cohort}, \code{value}, tile center \code{x} and \code{y}, and fill
 \code{color} (\code{NA} for cells that are not drawn).}
-\item{\code{hexagon}}{List with the \code{x} and \code{y} offsets of the hexagon
-vertices relative to its center.}
+\item{\code{tiles}}{\code{"hexagon"} or \code{"square"}.}
+\item{\code{tile}}{List with the \code{x} and \code{y} offsets of the tile vertices
+relative to its center.}
 \item{\code{isolines}}{List of data frames \code{age}, \code{period} and \code{cohort},
 each with the isoline \code{value} and segment ends \code{x1}, \code{y1}, \code{x2},
 \code{y2}.}
@@ -90,15 +95,15 @@ each with the isoline \code{value} and segment ends \code{x1}, \code{y1}, \code{
 \item{\code{dims}}{List with the first and last age and period, and the
 \code{interval}.}
 \item{\code{extent}}{Numeric vector \code{xmin}, \code{xmax}, \code{ymin}, \code{ymax} covering
-the hexagons and isolines.}
+the tiles and isolines.}
 \item{\code{wrap_cohort_labels}}{The \code{wrap_cohort_labels} setting.}
 }
 }
 \description{
-Does all the computation behind \code{\link[=hexamap]{hexamap()}} without drawing anything:
-hexagon centers and colors, isoline segments, color scale and colorbar
-ticks. Draw the result with \link[=plot.hexamap_layout]{plot()}, or inspect it
-to build custom graphics.
+Does all the computation behind \code{\link[=hexamap]{hexamap()}} and \code{\link[=lexis_map]{lexis_map()}} without
+drawing anything: tile centers and colors, isoline segments, color scale
+and colorbar ticks. Draw the result with \link[=plot.hexamap_layout]{plot()},
+or inspect it to build custom graphics.
 }
 \examples{
 rates <- outer(15:70, 1999:2018, function(a, p) (a - 10) * (p - 1990) / 40)

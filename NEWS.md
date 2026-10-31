@@ -1,3 +1,26 @@
+# hexamap 0.5.0
+
+## New features
+
+* New `lexis_map()` draws a traditional Lexis diagram (square tiles,
+  periods on the x axis, ages on the y axis, cohorts on the diagonals)
+  with all the options of `hexamap()`, for side-by-side comparisons.
+  `hexamap_layout()` and `hexamap()` gain a `tiles` argument, and
+  `apc_to_xy()` accepts `tiles = "square"`.
+* New `simulate_apc()` generates rates from a log-linear
+  age-period-cohort model, with effects given as functions or vectors and
+  optional Poisson noise.
+* New `as_apc_matrix()` reshapes long data (one row per age-period
+  combination, e.g. from CDC WONDER) into an age-by-period matrix on a
+  regular grid, with `NA` for missing combinations.
+* New `apc_rates()` computes rates from counts and population, with `NA`
+  where the population is zero or missing.
+
+## Changes
+
+* The `hexagon` element of `hexamap_layout` objects is now called `tile`.
+  A new `tiles` element records the tile shape.
+
 # hexamap 0.4.0
 
 ## New features

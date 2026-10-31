@@ -2,14 +2,16 @@
 % Please edit documentation in R/coords.R
 \name{apc_to_xy}
 \alias{apc_to_xy}
-\title{Convert age and period to hexamap coordinates}
+\title{Convert age and period to plot coordinates}
 \usage{
-apc_to_xy(age, period)
+apc_to_xy(age, period, tiles = c("hexagon", "square"))
 }
 \arguments{
 \item{age}{Numeric vector of ages.}
 
 \item{period}{Numeric vector of periods, recycled to the length of \code{age}.}
+
+\item{tiles}{\code{"hexagon"} for hexamaps or \code{"square"} for Lexis diagrams.}
 }
 \value{
 A list with numeric vectors \code{x} and \code{y}, which can be passed
@@ -17,8 +19,9 @@ directly to \code{\link[graphics:points]{graphics::points()}} or \code{\link[gra
 }
 \description{
 Maps age-period pairs onto the Cartesian coordinates used by \code{\link[=hexamap]{hexamap()}},
-with \eqn{x = p\sqrt{3}/2} and \eqn{y = a - p/2}. Use it to add points,
-lines or text to an existing hexamap.
+with \eqn{x = p\sqrt{3}/2} and \eqn{y = a - p/2}, or by \code{\link[=lexis_map]{lexis_map()}},
+with \eqn{x = p} and \eqn{y = a}. Use it to add points, lines or text to
+an existing plot.
 }
 \examples{
 rates <- outer(15:70, 1999:2018, function(a, p) (a - 10) * (p - 1990) / 40)

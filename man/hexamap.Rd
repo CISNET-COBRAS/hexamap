@@ -37,7 +37,8 @@ hexamap(
   hex_border = "fill",
   hex_border_width = 0.5,
   zoom_factor = NULL,
-  wrap_cohort_labels = TRUE
+  wrap_cohort_labels = TRUE,
+  tiles = c("hexagon", "square")
 )
 }
 \arguments{
@@ -136,6 +137,9 @@ region.}
 
 \item{wrap_cohort_labels}{Logical; whether cohort labels wrap around the
 bottom edge of the hexamap.}
+
+\item{tiles}{\code{"hexagon"} for a hexamap or \code{"square"} for a traditional
+Lexis diagram; see \code{\link[=lexis_map]{lexis_map()}}.}
 }
 \value{
 The \code{hexamap_layout} object returned by \code{\link[=hexamap_layout]{hexamap_layout()}},

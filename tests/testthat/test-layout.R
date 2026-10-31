@@ -52,13 +52,13 @@ test_that("non-numeric dimnames are ignored", {
   expect_no_error(hexamap_layout(rates, 15, 2000, 1))
 })
 
-test_that("the extent covers the hexagons and isolines", {
+test_that("the extent covers the tiles and isolines", {
   lay <- hexamap_layout(example_rates(), 15, 1999, 1, wrap_cohort_labels = FALSE)
   iso <- do.call(rbind, lay$isolines)
   expect_true(all(c(iso$x1, iso$x2) >= lay$extent[["xmin"]]))
   expect_true(all(c(iso$y1, iso$y2) >= lay$extent[["ymin"]]))
-  expect_true(all(lay$cells$x + max(lay$hexagon$x) <= lay$extent[["xmax"]]))
-  expect_true(all(lay$cells$y + max(lay$hexagon$y) <= lay$extent[["ymax"]]))
+  expect_true(all(lay$cells$x + max(lay$tile$x) <= lay$extent[["xmax"]]))
+  expect_true(all(lay$cells$y + max(lay$tile$y) <= lay$extent[["ymax"]]))
 })
 
 test_that("layouts print a summary", {

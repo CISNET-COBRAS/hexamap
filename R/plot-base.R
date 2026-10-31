@@ -99,10 +99,11 @@ plot.hexamap_layout <- function(x,
                        scale_units)
   fit_plot_window(x$extent, space$margins)
 
-  draw_hexagons(x, na_color, hex_border, hex_border_width)
-  draw_isolines(x$isolines, labels, line_color, line_width, label_color, label_size)
+  draw_tiles(x, na_color, hex_border, hex_border_width)
+  draw_isolines(x$isolines, labels, x$tiles, line_color, line_width,
+                label_color, label_size)
   if (!is.null(highlight)) { # bold labels stay readable for any line color
-    draw_isolines(highlight$isolines, highlight_labels, highlight$col,
+    draw_isolines(highlight$isolines, highlight_labels, x$tiles, highlight$col,
                   highlight$lwd, label_color, label_size, label_font = 2)
   }
   if (legend) {
@@ -178,7 +179,7 @@ resolve_highlight <- function(highlight, x) {
       stop("Highlighted ", type, "s must be numbers between ",
            ranges[[type]][1], " and ", ranges[[type]][2], ".", call. = FALSE)
     }
-    isoline_segments(type, sort(values), d, x$wrap_cohort_labels)
+    isoline_segments(type, sort(values), d, x$wrap_cohort_labels, x$tiles)
   })
   col <- if (is.null(highlight$col)) "red" else highlight$col
   lwd <- if (is.null(highlight$lwd)) 1.5 else highlight$lwd
@@ -210,15 +211,16 @@ label_space <- function(x, labels, ticks, cex, legend, colorbar_width,
   }
   char_height <- graphics::strheight("M", units = "inches", cex = cex)
   pad <- 0.05
-  cos30 <- cos(pi / 6)
-  sin30 <- 0.5
+  angle <- isoline_angles(x$tiles) * pi / 180
 
   age_w <- width(labels$age)
   cohort_w <- width(labels$cohort)
-  # age labels slope down to the right; cohort labels slope down to the left
-  left <- cohort_w * cos30 + char_height + pad
-  right <- age_w * cos30 + char_height + pad
-  bottom <- max(age_w, cohort_w) * sin30 + char_height + pad
+  # age labels point right (and down on hexamaps); cohort labels point down
+  # to the left; period labels point up
+  left <- cohort_w * cos(angle[["cohort"]]) + char_height + pad
+  right <- age_w * cos(angle[["age"]]) + char_height + pad
+  bottom <- max(age_w * abs(sin(angle[["age"]])),
+                cohort_w * sin(angle[["cohort"]])) + char_height + pad
   top <- width(labels$period) + pad
 
   space <- list(margins = c(left = left, right = right, bottom = bottom, top = top))
@@ -261,25 +263,26 @@ fit_plot_window <- function(extent, margins) {
   invisible(upi)
 }
 
-draw_hexagons <- function(x, na_color, hex_border, hex_border_width) {
+draw_tiles <- function(x, na_color, hex_border, hex_border_width) {
   colors <- x$cells$color
   colors[is.na(colors)] <- na_color
   drawn <- !is.na(colors)
   border <- if (identical(hex_border, "fill")) colors[drawn] else hex_border
-  hex_x <- outer(x$cells$x[drawn], x$hexagon$x, "+")
-  hex_y <- outer(x$cells$y[drawn], x$hexagon$y, "+")
-  # one polygon() call, with hexagons separated by NA
-  polygon(x = as.vector(t(cbind(hex_x, NA))),
-          y = as.vector(t(cbind(hex_y, NA))),
+  tile_x <- outer(x$cells$x[drawn], x$tile$x, "+")
+  tile_y <- outer(x$cells$y[drawn], x$tile$y, "+")
+  # one polygon() call, with tiles separated by NA
+  polygon(x = as.vector(t(cbind(tile_x, NA))),
+          y = as.vector(t(cbind(tile_y, NA))),
           col = colors[drawn], border = border, lwd = hex_border_width)
 }
 
-draw_isolines <- function(iso, labels, line_color, line_width, label_color,
-                          label_size, label_font = 1) {
+draw_isolines <- function(iso, labels, tiles, line_color, line_width,
+                          label_color, label_size, label_font = 1) {
   # labels go at the end of age and period isolines, at the start of cohort ones
-  label_at <- list(age = list(end = 2, srt = -30, adj = c(0, 0.5)),
-                   period = list(end = 2, srt = 90, adj = c(0, 0.5)),
-                   cohort = list(end = 1, srt = 30, adj = c(1, 0.5)))
+  angle <- isoline_angles(tiles)
+  label_at <- list(age = list(end = 2, srt = angle[["age"]], adj = c(0, 0.5)),
+                   period = list(end = 2, srt = angle[["period"]], adj = c(0, 0.5)),
+                   cohort = list(end = 1, srt = angle[["cohort"]], adj = c(1, 0.5)))
   for (type in names(label_at)) {
     d <- iso[[type]]
     if (NROW(d) == 0) { # text() fails on zero-length labels

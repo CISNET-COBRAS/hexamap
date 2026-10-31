@@ -1,18 +1,21 @@
 #' Compute the layout of a hexamap
 #'
-#' Does all the computation behind [hexamap()] without drawing anything:
-#' hexagon centers and colors, isoline segments, color scale and colorbar
-#' ticks. Draw the result with [plot()][plot.hexamap_layout()], or inspect it
-#' to build custom graphics.
+#' Does all the computation behind [hexamap()] and [lexis_map()] without
+#' drawing anything: tile centers and colors, isoline segments, color scale
+#' and colorbar ticks. Draw the result with [plot()][plot.hexamap_layout()],
+#' or inspect it to build custom graphics.
 #'
 #' @inheritParams hexamap
+#' @param tiles `"hexagon"` for a hexamap or `"square"` for a traditional
+#'   Lexis diagram, with periods on the x axis and ages on the y axis.
 #' @return An object of class `hexamap_layout`, a list with:
 #'   \describe{
 #'     \item{`cells`}{Data frame with one row per age-period cell: `age`,
-#'       `period`, `cohort`, `value`, hexagon center `x` and `y`, and fill
+#'       `period`, `cohort`, `value`, tile center `x` and `y`, and fill
 #'       `color` (`NA` for cells that are not drawn).}
-#'     \item{`hexagon`}{List with the `x` and `y` offsets of the hexagon
-#'       vertices relative to its center.}
+#'     \item{`tiles`}{`"hexagon"` or `"square"`.}
+#'     \item{`tile`}{List with the `x` and `y` offsets of the tile vertices
+#'       relative to its center.}
 #'     \item{`isolines`}{List of data frames `age`, `period` and `cohort`,
 #'       each with the isoline `value` and segment ends `x1`, `y1`, `x2`,
 #'       `y2`.}
@@ -22,7 +25,7 @@
 #'     \item{`dims`}{List with the first and last age and period, and the
 #'       `interval`.}
 #'     \item{`extent`}{Numeric vector `xmin`, `xmax`, `ymin`, `ymax` covering
-#'       the hexagons and isolines.}
+#'       the tiles and isolines.}
 #'     \item{`wrap_cohort_labels`}{The `wrap_cohort_labels` setting.}
 #'   }
 #' @export
@@ -47,9 +50,11 @@ hexamap_layout <- function(data,
                            n_colors = 100,
                            midpoint = NULL,
                            isolines = c("age", "period", "cohort"),
-                           wrap_cohort_labels = TRUE) {
+                           wrap_cohort_labels = TRUE,
+                           tiles = c("hexagon", "square")) {
 
   # check inputs and set default values for missing parameters
+  tiles <- match.arg(tiles)
   data <- check_apc_matrix(data)
   dims <- resolve_dims(data, first_age, first_period, interval)
   interval <- dims$interval
@@ -97,8 +102,9 @@ hexamap_layout <- function(data,
                       period = rep(periods, each = length(ages)),
                       value = as.vector(data))
   cells$cohort <- cells$period - cells$age
-  cells$x <- compute_xcoordinate(cells$period)
-  cells$y <- compute_ycoordinate(cells$period, cells$age)
+  centers <- apc_xy(cells$period, cells$age, tiles)
+  cells$x <- centers$x
+  cells$y <- centers$y
   cells <- cells[, c("age", "period", "cohort", "value", "x", "y")]
 
   # keep only the finite cells and truncate them to the color scale limits
@@ -118,19 +124,21 @@ hexamap_layout <- function(data,
   ticks <- colorbar_ticks(values, colorbar_range, colorbar_scale, midpoint)
 
   isolines <- compute_isolines(dims, first_age_isoline, first_period_isoline,
-                               isoline_interval, wrap_cohort_labels, isolines)
+                               isoline_interval, wrap_cohort_labels, isolines,
+                               tiles)
 
-  hexagon <- hex_vertices(interval)
+  tile <- tile_vertices(interval, tiles)
   iso_x <- unlist(lapply(isolines, function(d) c(d$x1, d$x2)))
   iso_y <- unlist(lapply(isolines, function(d) c(d$y1, d$y2)))
-  extent <- c(xmin = min(cells$x + min(hexagon$x), iso_x),
-              xmax = max(cells$x + max(hexagon$x), iso_x),
-              ymin = min(cells$y + min(hexagon$y), iso_y),
-              ymax = max(cells$y + max(hexagon$y), iso_y))
+  extent <- c(xmin = min(cells$x + min(tile$x), iso_x),
+              xmax = max(cells$x + max(tile$x), iso_x),
+              ymin = min(cells$y + min(tile$y), iso_y),
+              ymax = max(cells$y + max(tile$y), iso_y))
 
   structure(
     list(cells = cells,
-         hexagon = hexagon,
+         tiles = tiles,
+         tile = tile,
          isolines = isolines,
          scale = list(type = colorbar_scale, limits = colorbar_range,
                       midpoint = midpoint, colors = color_map, ticks = ticks),
@@ -147,7 +155,7 @@ print.hexamap_layout <- function(x, ...) {
   d <- x$dims
   n_drawn <- sum(!is.na(x$cells$color))
   n_cells <- nrow(x$cells)
-  cat("<hexamap_layout>\n")
+  cat("<hexamap_layout> (", x$tiles, " tiles)\n", sep = "")
   cat("  Ages:    ", d$first_age, "-", d$last_age,
       "  Periods: ", d$first_period, "-", d$last_period,
       "  Cohorts: ", d$first_period - d$last_age, "-",

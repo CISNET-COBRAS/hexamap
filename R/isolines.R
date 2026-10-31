@@ -10,7 +10,8 @@
 #' @noRd
 compute_isolines <- function(dims, first_age_isoline, first_period_isoline,
                              isoline_interval, wrap_cohort_labels,
-                             types = c("age", "period", "cohort")) {
+                             types = c("age", "period", "cohort"),
+                             tiles = "hexagon") {
   age_isolines <- seq(from = first_age_isoline, to = dims$last_age, by = isoline_interval)
   period_isolines <- seq(from = first_period_isoline, to = dims$last_period, by = isoline_interval)
   # cohort isolines go through the crossings of the age and period isolines
@@ -24,7 +25,7 @@ compute_isolines <- function(dims, first_age_isoline, first_period_isoline,
     values[[type]] <- numeric(0)
   }
   lapply(stats::setNames(names(values), names(values)), function(type) {
-    isoline_segments(type, values[[type]], dims, wrap_cohort_labels)
+    isoline_segments(type, values[[type]], dims, wrap_cohort_labels, tiles)
   })
 }
 
@@ -33,35 +34,30 @@ compute_isolines <- function(dims, first_age_isoline, first_period_isoline,
 #' @param values Ages, periods or cohorts at which to draw isolines, within
 #'   the range of the data.
 #' @noRd
-isoline_segments <- function(type, values, dims, wrap_cohort_labels) {
+isoline_segments <- function(type, values, dims, wrap_cohort_labels,
+                             tiles = "hexagon") {
   first_age <- dims$first_age
   last_age <- dims$last_age
   first_period <- dims$first_period
   last_period <- dims$last_period
   interval <- dims$interval
 
+  # segment ends in period-age coordinates; age and period isolines extend
+  # one interval past the data to leave room for their labels
   if (type == "age") {
-    return(data.frame(value = values,
-                      x1 = rep(compute_xcoordinate(first_period), length(values)),
-                      y1 = compute_ycoordinate(first_period, values),
-                      x2 = rep(compute_xcoordinate(last_period + interval), length(values)),
-                      y2 = compute_ycoordinate(last_period + interval, values)))
+    start <- apc_xy(first_period, values, tiles)
+    end <- apc_xy(last_period + interval, values, tiles)
+  } else if (type == "period") {
+    start <- apc_xy(values, first_age, tiles)
+    end <- apc_xy(values, last_age + interval, tiles)
+  } else {
+    ends <- cohort_isoline_endpoints(values, first_age, last_age,
+                                     first_period, last_period,
+                                     wrap = wrap_cohort_labels)
+    start <- apc_xy(ends$p1 - interval, ends$a1 - interval, tiles)
+    end <- apc_xy(ends$p2, ends$a2, tiles)
   }
-  if (type == "period") {
-    return(data.frame(value = values,
-                      x1 = compute_xcoordinate(values),
-                      y1 = compute_ycoordinate(values, first_age),
-                      x2 = compute_xcoordinate(values),
-                      y2 = compute_ycoordinate(values, last_age + interval)))
-  }
-  ends <- cohort_isoline_endpoints(values, first_age, last_age,
-                                   first_period, last_period,
-                                   wrap = wrap_cohort_labels)
-  data.frame(value = values,
-             x1 = compute_xcoordinate(ends$p1 - interval),
-             y1 = compute_ycoordinate(ends$p1 - interval, ends$a1 - interval),
-             x2 = compute_xcoordinate(ends$p2),
-             y2 = compute_ycoordinate(ends$p2, ends$a2))
+  data.frame(value = values, x1 = start$x, y1 = start$y, x2 = end$x, y2 = end$y)
 }
 
 #' Default isoline spacing and starting points
