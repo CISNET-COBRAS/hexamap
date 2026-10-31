@@ -1,3 +1,34 @@
+# hexamap 0.2.0
+
+## New features
+
+* New `hexamap_layout()` computes a hexamap without drawing it: hexagon
+  centers and colors, isolines, color scale and colorbar ticks. Draw it
+  with `plot()` or use it to build custom graphics. `hexamap()` now
+  returns this layout invisibly. Layouts print a short summary.
+* New `apc_to_xy()` converts ages and periods to hexamap coordinates, to
+  add points, lines or text to a hexamap.
+* `first_age`, `first_period` and `interval` default to the numeric row
+  (age) and column (period) names of `data`. Age or period names that are
+  unequally spaced, or whose spacing differs from each other, give an error.
+* New `legend` argument turns the colorbar off.
+
+## Changes
+
+* The hexamap, its labels and the colorbar are now sized to fit the
+  current plotting region on any device, so hexamaps can be combined
+  with `par(mfrow = )`. Titles are drawn in the top margin and no longer
+  overlap the period labels.
+* `colorbar_width` is now the width of the colorbar in inches (default
+  0.15). `colorbar_height` is its height as a fraction of the hexamap
+  height (default 0.5).
+* `zoom_factor` is deprecated and ignored.
+* `title_text` and `subtitle_text` default to no title. The subtitle is
+  no longer passed through `prettyNum()`, which added thousands separators
+  to years ("1,999").
+* Hexagons are drawn with a single `polygon()` call and isolines with
+  `segments()`, which is faster and gives smaller files.
+
 # hexamap 0.1.2
 
 ## Bug fixes

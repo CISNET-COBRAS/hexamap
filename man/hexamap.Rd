@@ -6,25 +6,26 @@
 \usage{
 hexamap(
   data,
-  first_age,
-  first_period,
-  interval,
+  first_age = NULL,
+  first_period = NULL,
+  interval = NULL,
   first_age_isoline = NULL,
   first_period_isoline = NULL,
   isoline_interval = NULL,
   colorbar_range = NULL,
   colorbar_scale = "linear",
-  colorbar_width = 0.2,
-  colorbar_height = 0.25,
-  title_text = "Hexagonal Heatmap",
-  subtitle_text = "",
+  colorbar_width = 0.15,
+  colorbar_height = 0.5,
+  title_text = NULL,
+  subtitle_text = NULL,
   color_map = NULL,
   line_width = 0.5,
   line_color = "grey",
   label_size = 0.5,
   label_color = "black",
   scale_units = "Rate",
-  zoom_factor = 1,
+  legend = TRUE,
+  zoom_factor = NULL,
   wrap_cohort_labels = TRUE
 )
 }
@@ -32,11 +33,15 @@ hexamap(
 \item{data}{Numeric matrix (or data frame of numeric columns) with ages as
 rows and periods as columns. Missing and non-finite cells are not drawn.}
 
-\item{first_age}{First age in \code{data}.}
+\item{first_age}{First age in \code{data}. Defaults to the first row name of
+\code{data}, if numeric.}
 
-\item{first_period}{First period in \code{data}.}
+\item{first_period}{First period in \code{data}. Defaults to the first column
+name of \code{data}, if numeric.}
 
-\item{interval}{Width of the age and period groups (must be equal).}
+\item{interval}{Width of the age and period groups, which must be equal.
+Defaults to the spacing of the numeric row or column names of \code{data},
+or 1.}
 
 \item{first_age_isoline, first_period_isoline}{First age and period at
 which to draw an isoline. Default to \code{first_age} and \code{first_period}.}
@@ -52,10 +57,13 @@ range of \code{data}.}
 or \code{"quantile"} (each color covers the same share of cells). The names
 \code{"Normal"} and \code{"Percentile"} used in earlier versions are also accepted.}
 
-\item{colorbar_width, colorbar_height}{Size of the colorbar relative to the
-plot.}
+\item{colorbar_width}{Width of the colorbar, in inches.}
 
-\item{title_text, subtitle_text}{Title and subtitle.}
+\item{colorbar_height}{Height of the colorbar, as a fraction of the
+height of the hexamap.}
+
+\item{title_text, subtitle_text}{Title and subtitle, drawn above the
+hexamap. \code{NULL} or \code{""} for none.}
 
 \item{color_map}{Vector of colors from low to high. Defaults to a 100-color
 "jet" palette.}
@@ -67,14 +75,17 @@ labels.}
 
 \item{scale_units}{Text displayed above the colorbar.}
 
-\item{zoom_factor}{Scaling of the plotting region, in \verb{(0, 1]}.}
+\item{legend}{Logical; whether to draw the colorbar.}
+
+\item{zoom_factor}{Deprecated and ignored: hexamaps now fit the plotting
+region.}
 
 \item{wrap_cohort_labels}{Logical; whether cohort labels wrap around the
 bottom edge of the hexamap.}
 }
 \value{
-Called for its side effect of drawing on the current device;
-returns \code{NULL} invisibly.
+The \code{hexamap_layout} object returned by \code{\link[=hexamap_layout]{hexamap_layout()}},
+invisibly.
 }
 \description{
 Draws a field of hexagonal tiles, one per age-period cell, with age,
@@ -82,12 +93,22 @@ period and cohort isolines at equal 60 degree angles, plus a colorbar.
 Each tile is centered at \eqn{x = p\sqrt{3}/2} and \eqn{y = a - p/2}, so
 neighboring tiles are one \code{interval} apart along every APC axis.
 }
+\details{
+\code{hexamap()} is \code{\link[=hexamap_layout]{hexamap_layout()}} followed by
+\link[=plot.hexamap_layout]{plot()}. The hexamap is scaled to fit the current
+plotting region, so several hexamaps can be combined with
+\code{par(mfrow = )}. Use \code{\link[=apc_to_xy]{apc_to_xy()}} to add annotations.
+}
 \examples{
 ages <- 15:70
 periods <- 1999:2018
 rates <- outer(ages, periods, function(a, p) exp(-((a - 45) / 15)^2 + (p - 1999) / 20))
 hexamap(rates, first_age = 15, first_period = 1999, interval = 1,
         isoline_interval = 10)
+
+# ages and periods can also come from the dimnames
+dimnames(rates) <- list(ages, periods)
+hexamap(rates, isoline_interval = 10, title_text = "Simulated rates")
 }
 \references{
 Jalal H, Burke DS. Hexamaps for age-period-cohort data

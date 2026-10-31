@@ -17,11 +17,15 @@ create_hexamap(
 \item{data}{Numeric matrix (or data frame of numeric columns) with ages as
 rows and periods as columns. Missing and non-finite cells are not drawn.}
 
-\item{first_age}{First age in \code{data}.}
+\item{first_age}{First age in \code{data}. Defaults to the first row name of
+\code{data}, if numeric.}
 
-\item{first_period}{First period in \code{data}.}
+\item{first_period}{First period in \code{data}. Defaults to the first column
+name of \code{data}, if numeric.}
 
-\item{interval}{Width of the age and period groups (must be equal).}
+\item{interval}{Width of the age and period groups, which must be equal.
+Defaults to the spacing of the numeric row or column names of \code{data},
+or 1.}
 
 \item{color_scale}{Numeric vector of length 2 with the lower and upper
 limits of the color scale. Passed to \code{colorbar_range} in \code{\link[=hexamap]{hexamap()}}.}
@@ -29,8 +33,8 @@ limits of the color scale. Passed to \code{colorbar_range} in \code{\link[=hexam
 \item{...}{Further arguments passed to \code{\link[=hexamap]{hexamap()}}.}
 }
 \value{
-Called for its side effect of drawing on the current device;
-returns \code{NULL} invisibly.
+The \code{hexamap_layout} object returned by \code{\link[=hexamap_layout]{hexamap_layout()}},
+invisibly.
 }
 \description{
 Wrapper around \code{\link[=hexamap]{hexamap()}} that keeps the argument names used in the
