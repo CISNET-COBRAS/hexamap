@@ -77,7 +77,7 @@ hexamap_layout <- function(data,
   }
   if (is.null(color_map)) {
     if (is.null(palette)) { # diverging palette for scales with a midpoint
-      palette <- if (is.null(midpoint)) "viridis" else "Blue-Red 3"
+      palette <- if (is.null(midpoint)) "jet" else "Blue-Red 3"
     }
     color_map <- hexamap_palette(palette, n_colors)
   }

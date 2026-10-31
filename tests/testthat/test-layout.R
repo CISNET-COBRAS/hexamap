@@ -67,10 +67,10 @@ test_that("layouts print a summary", {
   expect_snapshot(print(hexamap_layout(rates, 15, 1999, 1, colorbar_range = c(0, 40))))
 })
 
-test_that("the default palette is viridis, or diverging with a midpoint", {
+test_that("the default palette is jet, or diverging with a midpoint", {
   rates <- example_rates()
   expect_equal(hexamap_layout(rates, 15, 1999, 1)$scale$colors,
-               hexamap_palette("viridis", 100))
+               hexamap_palette("jet", 100))
   lay <- hexamap_layout(rates / mean(rates), 15, 1999, 1,
                         colorbar_scale = "log", midpoint = 1)
   expect_equal(lay$scale$colors, hexamap_palette("Blue-Red 3", 100))

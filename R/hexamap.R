@@ -31,9 +31,10 @@
 #'   `"Normal"` and `"Percentile"` used in earlier versions are also accepted.
 #' @param color_map Vector of colors from low to high. Overrides `palette`.
 #' @param palette Name of a palette passed to [hexamap_palette()], used when
-#'   `color_map` is `NULL`. Defaults to `"viridis"`, or to the diverging
-#'   `"Blue-Red 3"` when `midpoint` is set. Use `"jet"` for the palette of
-#'   Jalal and Burke (2020).
+#'   `color_map` is `NULL`. Defaults to `"jet"`, the palette of Jalal and
+#'   Burke (2020), or to the diverging `"Blue-Red 3"` when `midpoint` is
+#'   set. `"viridis"` is a perceptually uniform alternative that is readable
+#'   by people with color vision deficiencies.
 #' @param n_colors Number of colors taken from `palette`.
 #' @param midpoint Value at the center of a diverging color scale, such as 1
 #'   for rate ratios on a log scale or 0 for differences. The color limits

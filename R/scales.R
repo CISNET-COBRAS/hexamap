@@ -1,10 +1,10 @@
 #' Color palettes for hexamaps
 #'
-#' Returns `n` colors from a named palette. The default, `"viridis"`, is
-#' perceptually uniform and readable by people with color vision
-#' deficiencies. `"jet"` is the rainbow palette used in Jalal and Burke
-#' (2020). Any palette from [grDevices::hcl.pals()] can also be used, such
-#' as `"Inferno"`, `"YlOrRd"`, or the diverging `"Blue-Red 3"`.
+#' Returns `n` colors from a named palette. The default, `"jet"`, is the
+#' palette used in Jalal and Burke (2020). Any palette from
+#' [grDevices::hcl.pals()] can also be used, such as `"viridis"` (perceptually
+#' uniform and readable by people with color vision deficiencies),
+#' `"Inferno"`, `"YlOrRd"`, or the diverging `"Blue-Red 3"`.
 #'
 #' @param name Name of the palette: `"jet"` or a name from
 #'   [grDevices::hcl.pals()]. Matching ignores case and spaces.
@@ -12,10 +12,10 @@
 #' @return A character vector of `n` colors, from low to high.
 #' @export
 #' @examples
-#' hexamap_palette("viridis", 5)
 #' hexamap_palette("jet", 5)
+#' hexamap_palette("viridis", 5)
 #' hexamap_palette("Blue-Red 3", 5)
-hexamap_palette <- function(name = "viridis", n = 100) {
+hexamap_palette <- function(name = "jet", n = 100) {
   check_number(n, "n", positive = TRUE)
   if (n != round(n)) {
     stop("`n` must be a whole number.", call. = FALSE)

@@ -78,7 +78,7 @@ test_that("a midpoint makes the limits symmetric", {
 })
 
 test_that("palettes are looked up by name", {
-  expect_length(hexamap_palette(), 100)
+  expect_equal(hexamap_palette(), hexamap_palette("jet", 100))
   expect_equal(hexamap_palette("viridis", 7), grDevices::hcl.colors(7, "viridis"))
   expect_equal(hexamap_palette("JET", 3)[c(1, 3)], c("#000000", "#7F0000"))
   expect_length(hexamap_palette("Blue-Red 3", 1), 1)

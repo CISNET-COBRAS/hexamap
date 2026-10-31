@@ -4,7 +4,7 @@
 \alias{hexamap_palette}
 \title{Color palettes for hexamaps}
 \usage{
-hexamap_palette(name = "viridis", n = 100)
+hexamap_palette(name = "jet", n = 100)
 }
 \arguments{
 \item{name}{Name of the palette: \code{"jet"} or a name from
@@ -16,14 +16,14 @@ hexamap_palette(name = "viridis", n = 100)
 A character vector of \code{n} colors, from low to high.
 }
 \description{
-Returns \code{n} colors from a named palette. The default, \code{"viridis"}, is
-perceptually uniform and readable by people with color vision
-deficiencies. \code{"jet"} is the rainbow palette used in Jalal and Burke
-(2020). Any palette from \code{\link[grDevices:hcl.pals]{grDevices::hcl.pals()}} can also be used, such
-as \code{"Inferno"}, \code{"YlOrRd"}, or the diverging \code{"Blue-Red 3"}.
+Returns \code{n} colors from a named palette. The default, \code{"jet"}, is the
+palette used in Jalal and Burke (2020). Any palette from
+\code{\link[grDevices:hcl.pals]{grDevices::hcl.pals()}} can also be used, such as \code{"viridis"} (perceptually
+uniform and readable by people with color vision deficiencies),
+\code{"Inferno"}, \code{"YlOrRd"}, or the diverging \code{"Blue-Red 3"}.
 }
 \examples{
-hexamap_palette("viridis", 5)
 hexamap_palette("jet", 5)
+hexamap_palette("viridis", 5)
 hexamap_palette("Blue-Red 3", 5)
 }

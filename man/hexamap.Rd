@@ -75,9 +75,10 @@ hexamap. \code{NULL} or \code{""} for none.}
 \item{color_map}{Vector of colors from low to high. Overrides \code{palette}.}
 
 \item{palette}{Name of a palette passed to \code{\link[=hexamap_palette]{hexamap_palette()}}, used when
-\code{color_map} is \code{NULL}. Defaults to \code{"viridis"}, or to the diverging
-\code{"Blue-Red 3"} when \code{midpoint} is set. Use \code{"jet"} for the palette of
-Jalal and Burke (2020).}
+\code{color_map} is \code{NULL}. Defaults to \code{"jet"}, the palette of Jalal and
+Burke (2020), or to the diverging \code{"Blue-Red 3"} when \code{midpoint} is
+set. \code{"viridis"} is a perceptually uniform alternative that is readable
+by people with color vision deficiencies.}
 
 \item{n_colors}{Number of colors taken from \code{palette}.}
 
