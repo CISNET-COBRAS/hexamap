@@ -49,6 +49,8 @@
 #' @inheritParams plot.hexamap_layout
 #' @param zoom_factor Deprecated and ignored: hexamaps now fit the plotting
 #'   region.
+#' @param tiles `"hexagon"` for a hexamap or `"square"` for a traditional
+#'   Lexis diagram; see [lexis_map()].
 #'
 #' @return The `hexamap_layout` object returned by [hexamap_layout()],
 #'   invisibly.
@@ -107,7 +109,8 @@ hexamap <- function(data,
                     hex_border = "fill",
                     hex_border_width = 0.5,
                     zoom_factor = NULL,
-                    wrap_cohort_labels = TRUE) {
+                    wrap_cohort_labels = TRUE,
+                    tiles = c("hexagon", "square")) {
   if (!is.null(zoom_factor)) {
     warning("`zoom_factor` is deprecated and ignored: hexamaps now fit the ",
             "plotting region.", call. = FALSE)
@@ -126,7 +129,8 @@ hexamap <- function(data,
                            n_colors = n_colors,
                            midpoint = midpoint,
                            isolines = isolines,
-                           wrap_cohort_labels = wrap_cohort_labels)
+                           wrap_cohort_labels = wrap_cohort_labels,
+                           tiles = tiles)
   plot(layout,
        title_text = title_text,
        subtitle_text = subtitle_text,
