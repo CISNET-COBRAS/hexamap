@@ -14,7 +14,8 @@ create_hexamap(
 )
 }
 \arguments{
-\item{data}{Numeric matrix with ages as rows and periods as columns.}
+\item{data}{Numeric matrix (or data frame of numeric columns) with ages as
+rows and periods as columns. Missing and non-finite cells are not drawn.}
 
 \item{first_age}{First age in \code{data}.}
 

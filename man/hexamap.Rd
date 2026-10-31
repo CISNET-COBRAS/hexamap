@@ -13,7 +13,7 @@ hexamap(
   first_period_isoline = NULL,
   isoline_interval = NULL,
   colorbar_range = NULL,
-  colorbar_scale = "Normal",
+  colorbar_scale = "linear",
   colorbar_width = 0.2,
   colorbar_height = 0.25,
   title_text = "Hexagonal Heatmap",
@@ -29,7 +29,8 @@ hexamap(
 )
 }
 \arguments{
-\item{data}{Numeric matrix with ages as rows and periods as columns.}
+\item{data}{Numeric matrix (or data frame of numeric columns) with ages as
+rows and periods as columns. Missing and non-finite cells are not drawn.}
 
 \item{first_age}{First age in \code{data}.}
 
@@ -47,8 +48,9 @@ which to draw an isoline. Default to \code{first_age} and \code{first_period}.}
 limits of the color scale. Values outside are truncated. Defaults to the
 range of \code{data}.}
 
-\item{colorbar_scale}{How colors are mapped to values: \code{"Normal"}
-(linear), \code{"Log"}, or \code{"Percentile"}.}
+\item{colorbar_scale}{How colors are mapped to values: \code{"linear"}, \code{"log"}
+or \code{"quantile"} (each color covers the same share of cells). The names
+\code{"Normal"} and \code{"Percentile"} used in earlier versions are also accepted.}
 
 \item{colorbar_width, colorbar_height}{Size of the colorbar relative to the
 plot.}
@@ -63,9 +65,9 @@ plot.}
 \item{label_size, label_color}{Size and color of the isoline and colorbar
 labels.}
 
-\item{scale_units}{Units of the color scale (currently unused).}
+\item{scale_units}{Text displayed above the colorbar.}
 
-\item{zoom_factor}{Scaling of the plotting region (values in \verb{(0, 1]}).}
+\item{zoom_factor}{Scaling of the plotting region, in \verb{(0, 1]}.}
 
 \item{wrap_cohort_labels}{Logical; whether cohort labels wrap around the
 bottom edge of the hexamap.}
