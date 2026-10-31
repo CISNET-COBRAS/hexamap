@@ -8,6 +8,16 @@
 #' @param x A `hexamap_layout` object.
 #' @param title_text,subtitle_text Title and subtitle, drawn above the
 #'   hexamap. `NULL` or `""` for none.
+#' @param title_adj Horizontal alignment of the title and subtitle: 0 for
+#'   left, 0.5 for centered, 1 for right.
+#' @param labels Named character vector with the prefixes of the `age`,
+#'   `period` and `cohort` isoline labels. Missing names keep their default,
+#'   so `labels = c(period = "Year: ")` only changes the period labels.
+#' @param highlight List of ages, periods and/or cohorts to draw as
+#'   highlighted lines, with optional `col` and `lwd`, e.g.
+#'   `list(cohort = 1975)` or `list(age = c(30, 50), col = "white", lwd = 2)`.
+#'   Values need not be isolines but must be within the range of the data.
+#'   Their labels are drawn in bold.
 #' @param line_width,line_color Width and color of the isolines.
 #' @param label_size,label_color Size and color of the isoline and colorbar
 #'   labels.
@@ -33,12 +43,19 @@
 #' lay <- hexamap_layout(rates, first_age = 15, first_period = 1999,
 #'                       interval = 1, isoline_interval = 10)
 #' plot(lay, title_text = "Simulated rates", scale_units = "Rate")
+#'
+#' # full-word labels and a highlighted birth cohort
+#' plot(lay, labels = c(age = "Age ", period = "", cohort = "Born "),
+#'      highlight = list(cohort = 1975, col = "white", lwd = 2))
 plot.hexamap_layout <- function(x,
                                 title_text = NULL,
                                 subtitle_text = NULL,
+                                title_adj = 0.5,
+                                labels = c(age = "A: ", period = "P: ", cohort = "C: "),
+                                highlight = NULL,
                                 line_width = .5,
                                 line_color = "grey",
-                                label_size = .5,
+                                label_size = .7,
                                 label_color = "black",
                                 scale_units = "Rate",
                                 legend = TRUE,
@@ -59,6 +76,9 @@ plot.hexamap_layout <- function(x,
   check_flag(legend, "legend")
   check_number(colorbar_width, "colorbar_width", positive = TRUE)
   check_number(colorbar_height, "colorbar_height", positive = TRUE)
+  check_number(title_adj, "title_adj")
+  prefixes <- resolve_label_prefixes(labels)
+  highlight <- resolve_highlight(highlight, x)
   has_title <- !is.null(title_text) && nzchar(title_text)
   has_subtitle <- !is.null(subtitle_text) && nzchar(subtitle_text)
 
@@ -68,17 +88,23 @@ plot.hexamap_layout <- function(x,
   on.exit(par(old_par), add = TRUE)
   plot.new()
 
-  labels <- isoline_labels(x)
+  labels <- isoline_labels(x$isolines, prefixes)
+  highlight_labels <- isoline_labels(highlight$isolines, prefixes) # empty if NULL
   ticks <- tick_labels(x)
   if (show_na_key) {
     ticks$na <- na_label
   }
-  space <- label_space(x, labels, ticks, label_size * par("cex"), legend,
-                       colorbar_width, scale_units)
+  space <- label_space(x, Map(c, labels, highlight_labels), ticks,
+                       label_size * par("cex"), legend, colorbar_width,
+                       scale_units)
   fit_plot_window(x$extent, space$margins)
 
   draw_hexagons(x, na_color, hex_border, hex_border_width)
-  draw_isolines(x, labels, line_color, line_width, label_color, label_size)
+  draw_isolines(x$isolines, labels, line_color, line_width, label_color, label_size)
+  if (!is.null(highlight)) { # bold labels stay readable for any line color
+    draw_isolines(highlight$isolines, highlight_labels, highlight$col,
+                  highlight$lwd, label_color, label_size, label_font = 2)
+  }
   if (legend) {
     draw_colorbar(x, ticks, space, colorbar_width, colorbar_height,
                   scale_units, line_width, label_color, label_size,
@@ -86,18 +112,81 @@ plot.hexamap_layout <- function(x,
   }
 
   if (has_title) {
-    title(main = title_text, line = 0.6 + 1.3 * has_subtitle)
+    title(main = title_text, line = 0.6 + 1.3 * has_subtitle, adj = title_adj)
   }
   if (has_subtitle) {
-    title(main = subtitle_text, line = 0.6, cex.main = 1, font.main = 1)
+    title(main = subtitle_text, line = 0.6, cex.main = 1, font.main = 1,
+          adj = title_adj)
   }
   invisible(x)
 }
 
-isoline_labels <- function(x) {
-  list(age = paste("A:", x$isolines$age$value),
-       period = paste("P:", x$isolines$period$value),
-       cohort = paste("C:", x$isolines$cohort$value))
+isoline_labels <- function(isolines, prefixes) {
+  # paste0() turns zero-length values into one label, so guard against it
+  label <- function(type) {
+    values <- isolines[[type]]$value
+    if (length(values) == 0) character(0) else paste0(prefixes[[type]], values)
+  }
+  list(age = label("age"), period = label("period"), cohort = label("cohort"))
+}
+
+resolve_label_prefixes <- function(labels) {
+  prefixes <- c(age = "A: ", period = "P: ", cohort = "C: ")
+  if (is.null(labels)) {
+    return(prefixes)
+  }
+  if (!is.character(labels) || is.null(names(labels)) ||
+      !all(names(labels) %in% names(prefixes))) {
+    stop("`labels` must be a named character vector with names among ",
+         "\"age\", \"period\" and \"cohort\".", call. = FALSE)
+  }
+  prefixes[names(labels)] <- labels
+  prefixes
+}
+
+#' Validate highlighted lines and compute their segments
+#'
+#' @param highlight `NULL`, or a list with any of `age`, `period`, `cohort`
+#'   (numeric values) and optional `col` and `lwd`.
+#' @param x A `hexamap_layout` object.
+#' @return `NULL`, or a list with `isolines` (as in the layout), `col` and
+#'   `lwd`.
+#' @noRd
+resolve_highlight <- function(highlight, x) {
+  if (is.null(highlight)) {
+    return(NULL)
+  }
+  types <- c("age", "period", "cohort")
+  if (!is.list(highlight) || is.null(names(highlight)) ||
+      !all(names(highlight) %in% c(types, "col", "lwd")) ||
+      !any(names(highlight) %in% types)) {
+    stop("`highlight` must be a list with any of `age`, `period` and ",
+         "`cohort`, plus optional `col` and `lwd`, e.g. ",
+         "list(cohort = 1975).", call. = FALSE)
+  }
+  d <- x$dims
+  ranges <- list(age = c(d$first_age, d$last_age),
+                 period = c(d$first_period, d$last_period),
+                 cohort = c(d$first_period - d$last_age, d$last_period - d$first_age))
+  isolines <- lapply(stats::setNames(types, types), function(type) {
+    values <- highlight[[type]]
+    if (is.null(values)) {
+      values <- numeric(0)
+    }
+    if (!is.numeric(values) || anyNA(values) ||
+        any(values < ranges[[type]][1] | values > ranges[[type]][2])) {
+      stop("Highlighted ", type, "s must be numbers between ",
+           ranges[[type]][1], " and ", ranges[[type]][2], ".", call. = FALSE)
+    }
+    isoline_segments(type, sort(values), d, x$wrap_cohort_labels)
+  })
+  col <- if (is.null(highlight$col)) "red" else highlight$col
+  lwd <- if (is.null(highlight$lwd)) 1.5 else highlight$lwd
+  check_number(lwd, "highlight$lwd", positive = TRUE)
+  if (length(col) != 1) {
+    stop("`highlight$col` must be a single color.", call. = FALSE)
+  }
+  list(isolines = isolines, col = col, lwd = lwd)
 }
 
 tick_labels <- function(x) {
@@ -185,19 +274,23 @@ draw_hexagons <- function(x, na_color, hex_border, hex_border_width) {
           col = colors[drawn], border = border, lwd = hex_border_width)
 }
 
-draw_isolines <- function(x, labels, line_color, line_width, label_color,
-                          label_size) {
-  iso <- x$isolines
-  for (type in c("age", "period", "cohort")) {
+draw_isolines <- function(iso, labels, line_color, line_width, label_color,
+                          label_size, label_font = 1) {
+  # labels go at the end of age and period isolines, at the start of cohort ones
+  label_at <- list(age = list(end = 2, srt = -30, adj = c(0, 0.5)),
+                   period = list(end = 2, srt = 90, adj = c(0, 0.5)),
+                   cohort = list(end = 1, srt = 30, adj = c(1, 0.5)))
+  for (type in names(label_at)) {
     d <- iso[[type]]
+    if (NROW(d) == 0) { # text() fails on zero-length labels
+      next
+    }
     graphics::segments(d$x1, d$y1, d$x2, d$y2, col = line_color, lwd = line_width)
+    pos <- label_at[[type]]
+    text(x = d[[paste0("x", pos$end)]], y = d[[paste0("y", pos$end)]],
+         labels = labels[[type]], col = label_color, cex = label_size,
+         font = label_font, srt = pos$srt, adj = pos$adj)
   }
-  text(x = iso$age$x2, y = iso$age$y2, labels = labels$age,
-       col = label_color, cex = label_size, srt = -30, adj = c(0, 0.5))
-  text(x = iso$period$x2, y = iso$period$y2, labels = labels$period,
-       col = label_color, cex = label_size, srt = 90, adj = c(0, 0.5))
-  text(x = iso$cohort$x1, y = iso$cohort$y1, labels = labels$cohort,
-       col = label_color, cex = label_size, srt = 30, adj = c(1, 0.5))
 }
 
 draw_colorbar <- function(x, ticks, space, colorbar_width,

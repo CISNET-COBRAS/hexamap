@@ -148,3 +148,43 @@ test_that("the eAppendix example runs unchanged through create_hexamap()", {
                    color_scale = c(0, 40))
   )
 })
+
+test_that("label prefixes are merged with the defaults", {
+  expect_equal(resolve_label_prefixes(c(period = "Year ")),
+               c(age = "A: ", period = "Year ", cohort = "C: "))
+  expect_equal(resolve_label_prefixes(NULL), c(age = "A: ", period = "P: ", cohort = "C: "))
+  expect_error(resolve_label_prefixes(c(year = "Y")), "`labels`")
+  expect_error(resolve_label_prefixes("A"), "`labels`")
+  iso <- hexamap_layout(example_rates(), 15, 1999, 1)$isolines
+  labs <- isoline_labels(iso, resolve_label_prefixes(c(age = "Age ")))
+  expect_equal(labs$age[1], "Age 20")
+  expect_equal(labs$period, c("P: 2000", "P: 2010"))
+  # no phantom label for empty isolines
+  expect_equal(isoline_labels(NULL, resolve_label_prefixes(NULL))$age, character(0))
+})
+
+test_that("highlighted lines are validated and computed", {
+  lay <- hexamap_layout(example_rates(), 15, 1999, 1)
+  hl <- resolve_highlight(list(cohort = c(1975, 1950), age = 33), lay)
+  expect_equal(hl$isolines$cohort$value, c(1950, 1975))
+  expect_equal(hl$isolines$age$value, 33)
+  expect_equal(nrow(hl$isolines$period), 0)
+  expect_equal(hl$col, "red")
+  expect_null(resolve_highlight(NULL, lay))
+  expect_error(resolve_highlight(list(cohort = 1900), lay), "between 1929 and 2003")
+  expect_error(resolve_highlight(list(year = 2000), lay), "`highlight`")
+  expect_error(resolve_highlight(list(col = "red"), lay), "`highlight`")
+  expect_error(resolve_highlight(1975, lay), "`highlight`")
+  expect_error(resolve_highlight(list(age = 30, lwd = -1), lay), "lwd")
+})
+
+test_that("labels, highlights, isoline choice and title alignment draw", {
+  local_null_device()
+  rates <- example_rates()
+  expect_no_error(hexamap(rates, 15, 1999, 1, labels = c(age = "Age ", period = ""),
+                          highlight = list(cohort = 1975, col = "white", lwd = 2),
+                          title_text = "T", title_adj = 0))
+  expect_no_error(hexamap(rates, 15, 1999, 1, isolines = "cohort",
+                          highlight = list(period = 2015)))
+  expect_no_error(hexamap(rates, 15, 1999, 1, isolines = NULL))
+})

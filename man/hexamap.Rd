@@ -18,13 +18,17 @@ hexamap(
   colorbar_height = 0.5,
   title_text = NULL,
   subtitle_text = NULL,
+  title_adj = 0.5,
   color_map = NULL,
   palette = NULL,
   n_colors = 100,
   midpoint = NULL,
+  isolines = c("age", "period", "cohort"),
+  labels = c(age = "A: ", period = "P: ", cohort = "C: "),
+  highlight = NULL,
   line_width = 0.5,
   line_color = "grey",
-  label_size = 0.5,
+  label_size = 0.7,
   label_color = "black",
   scale_units = "Rate",
   legend = TRUE,
@@ -51,10 +55,13 @@ Defaults to the spacing of the numeric row or column names of \code{data},
 or 1.}
 
 \item{first_age_isoline, first_period_isoline}{First age and period at
-which to draw an isoline. Default to \code{first_age} and \code{first_period}.}
+which to draw an isoline. Default to the first age and period in the
+data that are multiples of \code{isoline_interval} (e.g. 20 and 2000 for data
+starting at age 15 in 1999 with isolines every 10 years).}
 
-\item{isoline_interval}{Spacing between isolines. Defaults to
-\code{2 * interval}.}
+\item{isoline_interval}{Spacing between isolines. Defaults to the
+smallest round value (1, 2, 5, 10, 20, 25, 50, ...) that is a multiple
+of \code{interval} and gives at most 8 isolines.}
 
 \item{colorbar_range}{Numeric vector of length 2 with the lower and upper
 limits of the color scale. Values outside are truncated. Defaults to the
@@ -72,6 +79,9 @@ height of the hexamap.}
 \item{title_text, subtitle_text}{Title and subtitle, drawn above the
 hexamap. \code{NULL} or \code{""} for none.}
 
+\item{title_adj}{Horizontal alignment of the title and subtitle: 0 for
+left, 0.5 for centered, 1 for right.}
+
 \item{color_map}{Vector of colors from low to high. Overrides \code{palette}.}
 
 \item{palette}{Name of a palette passed to \code{\link[=hexamap_palette]{hexamap_palette()}}, used when
@@ -85,6 +95,19 @@ by people with color vision deficiencies.}
 \item{midpoint}{Value at the center of a diverging color scale, such as 1
 for rate ratios on a log scale or 0 for differences. The color limits
 are made symmetric around it.}
+
+\item{isolines}{Which isolines to draw: any of \code{"age"}, \code{"period"} and
+\code{"cohort"}, or \code{NULL} for none.}
+
+\item{labels}{Named character vector with the prefixes of the \code{age},
+\code{period} and \code{cohort} isoline labels. Missing names keep their default,
+so \code{labels = c(period = "Year: ")} only changes the period labels.}
+
+\item{highlight}{List of ages, periods and/or cohorts to draw as
+highlighted lines, with optional \code{col} and \code{lwd}, e.g.
+\code{list(cohort = 1975)} or \code{list(age = c(30, 50), col = "white", lwd = 2)}.
+Values need not be isolines but must be within the range of the data.
+Their labels are drawn in bold.}
 
 \item{line_width, line_color}{Width and color of the isolines.}
 
@@ -143,8 +166,12 @@ hexamap(rates, isoline_interval = 10, title_text = "Simulated rates")
 
 # a diverging scale for rate ratios relative to 2008
 ratios <- rates / rates[, "2008"]
-hexamap(ratios, isoline_interval = 10, colorbar_scale = "log",
-        midpoint = 1, scale_units = "Rate ratio")
+hexamap(ratios, colorbar_scale = "log", midpoint = 1,
+        scale_units = "Rate ratio")
+
+# period isolines only, labelled by year, with the 1975 cohort highlighted
+hexamap(rates, isolines = "period", labels = c(period = ""),
+        highlight = list(cohort = 1975))
 }
 \references{
 Jalal H, Burke DS. Hexamaps for age-period-cohort data

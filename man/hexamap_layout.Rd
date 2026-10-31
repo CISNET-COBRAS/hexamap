@@ -18,6 +18,7 @@ hexamap_layout(
   palette = NULL,
   n_colors = 100,
   midpoint = NULL,
+  isolines = c("age", "period", "cohort"),
   wrap_cohort_labels = TRUE
 )
 }
@@ -36,10 +37,13 @@ Defaults to the spacing of the numeric row or column names of \code{data},
 or 1.}
 
 \item{first_age_isoline, first_period_isoline}{First age and period at
-which to draw an isoline. Default to \code{first_age} and \code{first_period}.}
+which to draw an isoline. Default to the first age and period in the
+data that are multiples of \code{isoline_interval} (e.g. 20 and 2000 for data
+starting at age 15 in 1999 with isolines every 10 years).}
 
-\item{isoline_interval}{Spacing between isolines. Defaults to
-\code{2 * interval}.}
+\item{isoline_interval}{Spacing between isolines. Defaults to the
+smallest round value (1, 2, 5, 10, 20, 25, 50, ...) that is a multiple
+of \code{interval} and gives at most 8 isolines.}
 
 \item{colorbar_range}{Numeric vector of length 2 with the lower and upper
 limits of the color scale. Values outside are truncated. Defaults to the
@@ -63,6 +67,9 @@ by people with color vision deficiencies.}
 for rate ratios on a log scale or 0 for differences. The color limits
 are made symmetric around it.}
 
+\item{isolines}{Which isolines to draw: any of \code{"age"}, \code{"period"} and
+\code{"cohort"}, or \code{NULL} for none.}
+
 \item{wrap_cohort_labels}{Logical; whether cohort labels wrap around the
 bottom edge of the hexamap.}
 }
@@ -84,6 +91,7 @@ each with the isoline \code{value} and segment ends \code{x1}, \code{y1}, \code{
 \code{interval}.}
 \item{\code{extent}}{Numeric vector \code{xmin}, \code{xmax}, \code{ymin}, \code{ymax} covering
 the hexagons and isolines.}
+\item{\code{wrap_cohort_labels}}{The \code{wrap_cohort_labels} setting.}
 }
 }
 \description{

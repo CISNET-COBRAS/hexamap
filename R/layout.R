@@ -23,6 +23,7 @@
 #'       `interval`.}
 #'     \item{`extent`}{Numeric vector `xmin`, `xmax`, `ymin`, `ymax` covering
 #'       the hexagons and isolines.}
+#'     \item{`wrap_cohort_labels`}{The `wrap_cohort_labels` setting.}
 #'   }
 #' @export
 #' @examples
@@ -45,6 +46,7 @@ hexamap_layout <- function(data,
                            palette = NULL,
                            n_colors = 100,
                            midpoint = NULL,
+                           isolines = c("age", "period", "cohort"),
                            wrap_cohort_labels = TRUE) {
 
   # check inputs and set default values for missing parameters
@@ -53,17 +55,20 @@ hexamap_layout <- function(data,
   interval <- dims$interval
   colorbar_scale <- resolve_scale(colorbar_scale)
   check_flag(wrap_cohort_labels, "wrap_cohort_labels")
+  isolines <- resolve_isoline_types(isolines)
 
-  if (is.null(first_age_isoline)) {
-    first_age_isoline <- dims$first_age
-  }
-  if (is.null(first_period_isoline)) {
-    first_period_isoline <- dims$first_period
-  }
   if (is.null(isoline_interval)) {
-    isoline_interval <- 2 * interval
+    isoline_interval <- nice_isoline_interval(dims)
   }
   check_number(isoline_interval, "isoline_interval", positive = TRUE)
+  if (is.null(first_age_isoline)) {
+    first_age_isoline <- round_isoline_start(dims$first_age, dims$last_age,
+                                             isoline_interval, interval)
+  }
+  if (is.null(first_period_isoline)) {
+    first_period_isoline <- round_isoline_start(dims$first_period, dims$last_period,
+                                                isoline_interval, interval)
+  }
   check_number(first_age_isoline, "first_age_isoline")
   check_number(first_period_isoline, "first_period_isoline")
   if (first_age_isoline < dims$first_age || first_age_isoline > dims$last_age) {
@@ -113,7 +118,7 @@ hexamap_layout <- function(data,
   ticks <- colorbar_ticks(values, colorbar_range, colorbar_scale, midpoint)
 
   isolines <- compute_isolines(dims, first_age_isoline, first_period_isoline,
-                               isoline_interval, wrap_cohort_labels)
+                               isoline_interval, wrap_cohort_labels, isolines)
 
   hexagon <- hex_vertices(interval)
   iso_x <- unlist(lapply(isolines, function(d) c(d$x1, d$x2)))
@@ -131,7 +136,8 @@ hexamap_layout <- function(data,
                       midpoint = midpoint, colors = color_map, ticks = ticks),
          dims = dims[c("first_age", "last_age", "first_period",
                        "last_period", "interval")],
-         extent = extent),
+         extent = extent,
+         wrap_cohort_labels = wrap_cohort_labels),
     class = "hexamap_layout"
   )
 }
@@ -216,51 +222,4 @@ dimnames_as_numeric <- function(x) {
   }
   values <- suppressWarnings(as.numeric(x))
   if (anyNA(values)) NULL else values
-}
-
-#' Age, period and cohort isoline segments
-#'
-#' @param dims Output of `resolve_dims()`.
-#' @inheritParams hexamap
-#' @return A list of data frames `age`, `period` and `cohort` with the
-#'   isoline `value` and the segment ends `x1`, `y1`, `x2`, `y2`. Labels go
-#'   at the end of age and period isolines and at the start of cohort
-#'   isolines.
-#' @noRd
-compute_isolines <- function(dims, first_age_isoline, first_period_isoline,
-                             isoline_interval, wrap_cohort_labels) {
-  first_age <- dims$first_age
-  last_age <- dims$last_age
-  first_period <- dims$first_period
-  last_period <- dims$last_period
-  interval <- dims$interval
-
-  age_isolines <- seq(from = first_age_isoline, to = last_age, by = isoline_interval)
-  period_isolines <- seq(from = first_period_isoline, to = last_period, by = isoline_interval)
-  first_cohort_isoline <- first_period_isoline - tail(age_isolines, 1)
-  cohort_isolines <- seq(from = first_cohort_isoline, to = last_period - first_age,
-                         by = isoline_interval)
-
-  age <- data.frame(value = age_isolines,
-                    x1 = compute_xcoordinate(first_period),
-                    y1 = compute_ycoordinate(first_period, age_isolines),
-                    x2 = compute_xcoordinate(last_period + interval),
-                    y2 = compute_ycoordinate(last_period + interval, age_isolines))
-
-  period <- data.frame(value = period_isolines,
-                       x1 = compute_xcoordinate(period_isolines),
-                       y1 = compute_ycoordinate(period_isolines, first_age),
-                       x2 = compute_xcoordinate(period_isolines),
-                       y2 = compute_ycoordinate(period_isolines, last_age + interval))
-
-  ends <- cohort_isoline_endpoints(cohort_isolines, first_age, last_age,
-                                   first_period, last_period,
-                                   wrap = wrap_cohort_labels)
-  cohort <- data.frame(value = cohort_isolines,
-                       x1 = compute_xcoordinate(ends$p1 - interval),
-                       y1 = compute_ycoordinate(ends$p1 - interval, ends$a1 - interval),
-                       x2 = compute_xcoordinate(ends$p2),
-                       y2 = compute_ycoordinate(ends$p2, ends$a2))
-
-  list(age = age, period = period, cohort = cohort)
 }
