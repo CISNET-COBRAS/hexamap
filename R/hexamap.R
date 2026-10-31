@@ -20,9 +20,14 @@
 #'   Defaults to the spacing of the numeric row or column names of `data`,
 #'   or 1.
 #' @param first_age_isoline,first_period_isoline First age and period at
-#'   which to draw an isoline. Default to `first_age` and `first_period`.
-#' @param isoline_interval Spacing between isolines. Defaults to
-#'   `2 * interval`.
+#'   which to draw an isoline. Default to the first age and period in the
+#'   data that are multiples of `isoline_interval` (e.g. 20 and 2000 for data
+#'   starting at age 15 in 1999 with isolines every 10 years).
+#' @param isoline_interval Spacing between isolines. Defaults to the
+#'   smallest round value (1, 2, 5, 10, 20, 25, 50, ...) that is a multiple
+#'   of `interval` and gives at most 8 isolines.
+#' @param isolines Which isolines to draw: any of `"age"`, `"period"` and
+#'   `"cohort"`, or `NULL` for none.
 #' @param colorbar_range Numeric vector of length 2 with the lower and upper
 #'   limits of the color scale. Values outside are truncated. Defaults to the
 #'   range of `data`.
@@ -64,8 +69,12 @@
 #'
 #' # a diverging scale for rate ratios relative to 2008
 #' ratios <- rates / rates[, "2008"]
-#' hexamap(ratios, isoline_interval = 10, colorbar_scale = "log",
-#'         midpoint = 1, scale_units = "Rate ratio")
+#' hexamap(ratios, colorbar_scale = "log", midpoint = 1,
+#'         scale_units = "Rate ratio")
+#'
+#' # period isolines only, labelled by year, with the 1975 cohort highlighted
+#' hexamap(rates, isolines = "period", labels = c(period = ""),
+#'         highlight = list(cohort = 1975))
 hexamap <- function(data,
                     first_age = NULL,
                     first_period = NULL,
@@ -79,13 +88,17 @@ hexamap <- function(data,
                     colorbar_height = 0.5,
                     title_text = NULL,
                     subtitle_text = NULL,
+                    title_adj = 0.5,
                     color_map = NULL,
                     palette = NULL,
                     n_colors = 100,
                     midpoint = NULL,
+                    isolines = c("age", "period", "cohort"),
+                    labels = c(age = "A: ", period = "P: ", cohort = "C: "),
+                    highlight = NULL,
                     line_width = .5,
                     line_color = "grey",
-                    label_size = .5,
+                    label_size = .7,
                     label_color = "black",
                     scale_units = "Rate",
                     legend = TRUE,
@@ -112,10 +125,14 @@ hexamap <- function(data,
                            palette = palette,
                            n_colors = n_colors,
                            midpoint = midpoint,
+                           isolines = isolines,
                            wrap_cohort_labels = wrap_cohort_labels)
   plot(layout,
        title_text = title_text,
        subtitle_text = subtitle_text,
+       title_adj = title_adj,
+       labels = labels,
+       highlight = highlight,
        line_width = line_width,
        line_color = line_color,
        label_size = label_size,

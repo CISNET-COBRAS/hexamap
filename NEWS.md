@@ -1,3 +1,27 @@
+# hexamap 0.4.0
+
+## New features
+
+* New `highlight` argument draws chosen ages, periods and/or cohorts as
+  highlighted lines with bold labels, e.g.
+  `highlight = list(cohort = 1975)`. The values need not be isolines.
+  `col` and `lwd` set the line color and width.
+* New `labels` argument sets the prefixes of the isoline labels, e.g.
+  `labels = c(age = "Age ", period = "")`. Names left out keep the
+  defaults `"A: "`, `"P: "` and `"C: "`.
+* New `isolines` argument chooses which isolines to draw.
+* New `title_adj` argument aligns the title and subtitle.
+
+## Changes
+
+* Isolines now fall on round values by default. `isoline_interval` is
+  the smallest round spacing (1, 2, 5, 10, 20, 25, 50, ...) that is a
+  multiple of `interval` and gives at most 8 isolines. The first isolines
+  are the first ages and periods that are multiples of it. For the
+  paper's example (ages 15-70, 1999-2018), the defaults now match the
+  published figure: A: 20-70, P: 2000 and 2010, C: 1930-2000.
+* `label_size` defaults to 0.7 (was 0.5).
+
 # hexamap 0.3.0
 
 ## New features

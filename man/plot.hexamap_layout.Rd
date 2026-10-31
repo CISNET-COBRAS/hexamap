@@ -8,9 +8,12 @@
   x,
   title_text = NULL,
   subtitle_text = NULL,
+  title_adj = 0.5,
+  labels = c(age = "A: ", period = "P: ", cohort = "C: "),
+  highlight = NULL,
   line_width = 0.5,
   line_color = "grey",
-  label_size = 0.5,
+  label_size = 0.7,
   label_color = "black",
   scale_units = "Rate",
   legend = TRUE,
@@ -28,6 +31,19 @@
 
 \item{title_text, subtitle_text}{Title and subtitle, drawn above the
 hexamap. \code{NULL} or \code{""} for none.}
+
+\item{title_adj}{Horizontal alignment of the title and subtitle: 0 for
+left, 0.5 for centered, 1 for right.}
+
+\item{labels}{Named character vector with the prefixes of the \code{age},
+\code{period} and \code{cohort} isoline labels. Missing names keep their default,
+so \code{labels = c(period = "Year: ")} only changes the period labels.}
+
+\item{highlight}{List of ages, periods and/or cohorts to draw as
+highlighted lines, with optional \code{col} and \code{lwd}, e.g.
+\code{list(cohort = 1975)} or \code{list(age = c(30, 50), col = "white", lwd = 2)}.
+Values need not be isolines but must be within the range of the data.
+Their labels are drawn in bold.}
 
 \item{line_width, line_color}{Width and color of the isolines.}
 
@@ -72,4 +88,8 @@ rates <- outer(15:70, 1999:2018, function(a, p) (a - 10) * (p - 1990) / 40)
 lay <- hexamap_layout(rates, first_age = 15, first_period = 1999,
                       interval = 1, isoline_interval = 10)
 plot(lay, title_text = "Simulated rates", scale_units = "Rate")
+
+# full-word labels and a highlighted birth cohort
+plot(lay, labels = c(age = "Age ", period = "", cohort = "Born "),
+     highlight = list(cohort = 1975, col = "white", lwd = 2))
 }
