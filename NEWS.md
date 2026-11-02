@@ -1,3 +1,15 @@
+# hexamap 0.7.0
+
+## New data
+
+* New datasets `overdose_white_men` (age-by-year matrix of rates) and
+  `overdose_white_men_long` (one row per age and year, with deaths,
+  population and a reliability flag): accidental drug overdose deaths among
+  white men in the United States, ages 15-70, 1999-2018, from CDC WONDER.
+  These are the data of Figure 1C/D in Jalal and Burke (2020).
+  Following the CDC WONDER data use restrictions, counts of 9 or fewer
+  deaths and the rates based on them are not included.
+
 # hexamap 0.6.0
 
 ## New features
