@@ -1,3 +1,14 @@
+# hexamap 0.8.0
+
+## Documentation
+
+* New README with the motivation for hexamaps, a Lexis-vs-hexamap
+  comparison, the overdose example and a ggplot2 example.
+* New hex sticker (`man/figures/logo.png`), drawn with hexamap itself by
+  `data-raw/hexsticker.R`.
+* `citation("hexamap")` gives the Epidemiology letter and the package.
+* New pkgdown site configuration and GitHub Actions workflow.
+
 # hexamap 0.7.0
 
 ## New data

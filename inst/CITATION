@@ -1,0 +1,32 @@
+bibentry(
+  bibtype = "Article",
+  header = "To cite the hexamap method, please use:",
+  title = "Hexamaps for Age-Period-Cohort Data Visualization and Implementation in R",
+  author = c(person("Hawre", "Jalal"), person(c("Donald", "S."), "Burke")),
+  journal = "Epidemiology",
+  year = "2020",
+  volume = "31",
+  number = "6",
+  pages = "e47--e49",
+  doi = "10.1097/EDE.0000000000001236",
+  textVersion = paste(
+    "Jalal H, Burke DS. Hexamaps for age-period-cohort data visualization",
+    "and implementation in R. Epidemiology. 2020;31(6):e47-e49.",
+    "doi:10.1097/EDE.0000000000001236"
+  )
+)
+
+bibentry(
+  bibtype = "Manual",
+  header = "To cite the hexamap package, please use:",
+  title = "hexamap: Hexagonal Heatmaps for Age-Period-Cohort Data",
+  author = c(person("Hawre", "Jalal"), person("Fernando", "Alarid-Escudero")),
+  year = "2026",
+  note = paste("R package version", meta$Version),
+  url = "https://github.com/CISNET-COBRAS/hexamap",
+  textVersion = paste0(
+    "Jalal H, Alarid-Escudero F (2026). hexamap: Hexagonal Heatmaps for ",
+    "Age-Period-Cohort Data. R package version ", meta$Version, ". ",
+    "https://github.com/CISNET-COBRAS/hexamap"
+  )
+)

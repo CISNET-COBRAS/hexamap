@@ -1,0 +1,40 @@
+url: https://cisnet-cobras.github.io/hexamap/
+template:
+  bootstrap: 5
+  bslib:
+    primary: "#0B1D3A"
+    navbar-bg: "#0B1D3A"
+
+home:
+  title: "hexamap: Hexagonal Heatmaps for Age-Period-Cohort Data"
+
+authors:
+  Hawre Jalal:
+    href: https://orcid.org/0000-0002-8224-6834
+  Fernando Alarid-Escudero:
+    href: https://orcid.org/0000-0001-5076-1172
+
+reference:
+  - title: Plot hexamaps and Lexis diagrams
+    contents:
+      - hexamap
+      - lexis_map
+      - gg_hexamap
+      - plot.hexamap_layout
+  - title: Layouts, coordinates and colors
+    contents:
+      - hexamap_layout
+      - apc_to_xy
+      - hexamap_palette
+  - title: Prepare and simulate data
+    contents:
+      - as_apc_matrix
+      - apc_rates
+      - simulate_apc
+  - title: Data
+    contents:
+      - overdose_white_men
+  - title: Compatibility
+    desc: Interface of the code published with Jalal and Burke (2020).
+    contents:
+      - create_hexamap
