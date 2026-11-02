@@ -46,3 +46,6 @@ docs/
 
 # Rendered README/vignette scratch
 README.html
+
+# Raw CDC WONDER exports (counts of 0-9 deaths must not be published)
+data-raw/*.txt
