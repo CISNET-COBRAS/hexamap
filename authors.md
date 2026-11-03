@@ -32,13 +32,13 @@ doi:10.1097/EDE.0000000000001236
     }
 
 Jalal H, Alarid-Escudero F (2026). hexamap: Hexagonal Heatmaps for
-Age-Period-Cohort Data. R package version 0.8.1.
+Age-Period-Cohort Data. R package version 0.9.0.
 https://github.com/CISNET-COBRAS/hexamap
 
     @Manual{,
       title = {hexamap: Hexagonal Heatmaps for Age-Period-Cohort Data},
       author = {Hawre Jalal and Fernando Alarid-Escudero},
       year = {2026},
-      note = {R package version 0.8.1},
+      note = {R package version 0.9.0},
       url = {https://github.com/CISNET-COBRAS/hexamap},
     }

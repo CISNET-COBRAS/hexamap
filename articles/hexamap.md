@@ -142,7 +142,7 @@ hexamap(overdose_white_men,
         scale_units = "Deaths per 100,000")
 ```
 
-![Hexamap with isolines every 5 years labelled with full words, and the
+![Hexamap with isolines every 5 years labeled with full words, and the
 1975 birth cohort and the year 2015 highlighted in
 white.](hexamap_files/figure-html/isolines-1.png)
 
@@ -196,7 +196,7 @@ higher after, most strongly after
 ## Missing cells
 
 Cells with `NA` are drawn in `na_color` (light grey by default), with a
-key below the colorbar labelled `na_label`. In `overdose_white_men`,
+key below the colorbar labeled `na_label`. In `overdose_white_men`,
 cells with 9 or fewer deaths are missing because CDC WONDER does not
 allow publishing them. Use `na_color = NA` to leave missing cells blank.
 

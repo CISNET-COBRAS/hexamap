@@ -248,7 +248,7 @@ hexamap(ratios, colorbar_scale = "log", midpoint = 1,
         scale_units = "Rate ratio")
 
 
-# period isolines only, labelled by year, with the 1975 cohort highlighted
+# period isolines only, labeled by year, with the 1975 cohort highlighted
 hexamap(rates, isolines = "period", labels = c(period = ""),
         highlight = list(cohort = 1975))
 ```

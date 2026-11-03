@@ -9,6 +9,16 @@ Implements the method described in Jalal and Burke (2020)
 [doi:10.1097/EDE.0000000000001236](https://doi.org/10.1097/EDE.0000000000001236)
 .
 
+## See also
+
+Useful links:
+
+- <https://github.com/CISNET-COBRAS/hexamap>
+
+- <https://cisnet-cobras.github.io/hexamap/>
+
+- Report bugs at <https://github.com/CISNET-COBRAS/hexamap/issues>
+
 ## Author
 
 **Maintainer**: Fernando Alarid-Escudero <falarid@stanford.edu>
