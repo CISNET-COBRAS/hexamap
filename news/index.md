@@ -1,5 +1,21 @@
 # Changelog
 
+## hexamap 0.8.1
+
+### Documentation
+
+- New vignettes:
+  - [`vignette("hexamap")`](https://cisnet-cobras.github.io/hexamap/articles/hexamap.md):
+    getting started (data, isolines, colors, missing cells, layouts,
+    Lexis diagrams, ggplot2, saving figures).
+  - [`vignette("apc-patterns")`](https://cisnet-cobras.github.io/hexamap/articles/apc-patterns.md):
+    age, period and cohort effects alone, in pairs and all together, on
+    Lexis diagrams and hexamaps, and the identification problem.
+  - [`vignette("overdose")`](https://cisnet-cobras.github.io/hexamap/articles/overdose.md):
+    Figure 1C/D of Jalal and Burke (2020), the 1975 cohort comparison,
+    rate ratios and quantile scales.
+- The hex sticker labels its three isolines A, P and C.
+
 ## hexamap 0.8.0
 
 ### Documentation

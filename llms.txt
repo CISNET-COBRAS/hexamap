@@ -115,6 +115,17 @@ with a cohort effect, and simulated rates with a period effect after
 | [`hexamap_palette()`](https://cisnet-cobras.github.io/hexamap/reference/hexamap_palette.md) | Jet (as in the paper), viridis and other palettes |
 | [`apc_to_xy()`](https://cisnet-cobras.github.io/hexamap/reference/apc_to_xy.md) | Convert ages and periods to plot coordinates for annotations |
 
+## Learn more
+
+- [`vignette("hexamap")`](https://cisnet-cobras.github.io/hexamap/articles/hexamap.md):
+  getting started, from data preparation to isolines, colors, layouts
+  and ggplot2.
+- [`vignette("apc-patterns")`](https://cisnet-cobras.github.io/hexamap/articles/apc-patterns.md):
+  what age, period and cohort effects look like, alone and combined, on
+  hexamaps and Lexis diagrams.
+- [`vignette("overdose")`](https://cisnet-cobras.github.io/hexamap/articles/overdose.md):
+  the drug overdose example of the paper.
+
 ## Citation
 
 If you use hexamap, please cite the paper:
@@ -178,3 +189,13 @@ Interface of the code published with Jalal and Burke (2020).
 - [`create_hexamap()`](https://cisnet-cobras.github.io/hexamap/reference/create_hexamap.md)
   : Create a hexamap (eAppendix interface)
 
+# Articles
+
+### All vignettes
+
+- [Reading age, period and cohort
+  patterns](https://cisnet-cobras.github.io/hexamap/articles/apc-patterns.md):
+- [Getting started with
+  hexamap](https://cisnet-cobras.github.io/hexamap/articles/hexamap.md):
+- [Case study: drug overdose deaths among white
+  men](https://cisnet-cobras.github.io/hexamap/articles/overdose.md):
