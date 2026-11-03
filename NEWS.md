@@ -10,6 +10,7 @@
     identification problem.
   * `vignette("overdose")`: Figure 1C/D of Jalal and Burke (2020), the 1975
     cohort comparison, rate ratios and quantile scales.
+* The hex sticker labels its three isolines A, P and C.
 
 # hexamap 0.8.0
 
