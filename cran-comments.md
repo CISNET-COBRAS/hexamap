@@ -11,13 +11,21 @@ visualizing age-period-cohort data described in Jalal and Burke (2020)
 * checking CRAN incoming feasibility ... NOTE
   New submission
 
+  Possibly misspelled words in DESCRIPTION:
+    Jalal (17:29)
+    hexamap (14:63)
+    hexamaps (12:58)
+
+  These are spelled correctly: Jalal is the surname of the first author of
+  the cited article, and "hexamap" is the name of the visualization method
+  introduced in that article.
+
 ## Test environments
 
 * local macOS (aarch64), R 4.5.3
 * GitHub Actions: macOS (release), Windows (release), Ubuntu (devel,
   release, oldrel-1)
-* win-builder: R-devel
-* mac-builder: R-release
+* win-builder: R-devel (2026-11-02 r90827 ucrt)
 * R-hub: linux, macos-arm64, windows, ubuntu-clang
 
 ## Notes for reviewers

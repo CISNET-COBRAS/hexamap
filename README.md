@@ -9,7 +9,7 @@
 [![CRAN
 status](https://www.r-pkg.org/badges/version/hexamap)](https://CRAN.R-project.org/package=hexamap)
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
 
 **hexamap** draws *hexamaps*: heatmaps of age-period-cohort (APC) data
@@ -50,8 +50,13 @@ hexamap(rates, title_text = "Hexamap", scale_units = "Rate per 100,000")
 
 ## Installation
 
-hexamap will be on CRAN soon. In the meantime, install the development
-version from GitHub:
+Install hexamap from CRAN:
+
+``` r
+install.packages("hexamap")
+```
+
+or the development version from GitHub:
 
 ``` r
 # install.packages("pak")

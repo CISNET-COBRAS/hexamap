@@ -1,3 +1,22 @@
+# hexamap 1.0.0
+
+First CRAN release.
+
+* `hexamap()` and `lexis_map()` draw hexamaps and Lexis diagrams of
+  age-period-cohort data with base graphics, and `gg_hexamap()` and
+  `autoplot()` with 'ggplot2'. Options include isolines, labels,
+  highlighted cohorts, palettes, linear, log, quantile and diverging
+  scales, and missing cells.
+* `hexamap_layout()` computes a hexamap without drawing it, and
+  `apc_to_xy()` converts ages and periods to plot coordinates.
+* `simulate_apc()`, `as_apc_matrix()` and `apc_rates()` simulate and
+  prepare age-by-period data.
+* `overdose_white_men` contains the CDC WONDER data of Jalal and Burke
+  (2020).
+* `create_hexamap()` keeps the code of the paper's eAppendix working.
+* Three vignettes: getting started, reading APC patterns, and the
+  overdose case study.
+
 # hexamap 0.9.0
 
 Release candidate for the first CRAN release.
