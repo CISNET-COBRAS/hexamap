@@ -68,11 +68,11 @@ draw_sticker <- function(file, palette, background, border, text_color,
                        len * cos(angle), 0.25 + len * sin(angle),
                        col = isoline_color, lwd = 1.6)
   }
-  # axis letters where hexamap() puts the isoline labels: A at the right end
-  # of the age isoline, P at the top of the period isoline, C at the left
-  # end of the cohort isoline, just outside the corners of the cluster
+  # axis letters at the upper ends of the isolines, just outside the corners
+  # of the cluster, so they read A P C from left to right: A on the age
+  # isoline, P on the period isoline, C on the cohort isoline
   letter_at <- 0.61
-  letter_angle <- c(A = -30, P = 90, C = 210) * pi / 180
+  letter_angle <- c(A = 150, P = 90, C = 30) * pi / 180
   graphics::text(letter_at * cos(letter_angle), 0.25 + letter_at * sin(letter_angle),
                  names(letter_angle), col = border, cex = 1.05, font = 2)
 
