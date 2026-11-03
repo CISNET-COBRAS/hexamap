@@ -1,0 +1,135 @@
+---
+title: "Case study: drug overdose deaths among white men"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Case study: drug overdose deaths among white men}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5.5,
+  fig.align = "center",
+  dpi = 96,
+  fig.retina = 1
+)
+```
+
+Drug overdose deaths among white men in the United States increased steeply
+after 2000, but the role of birth cohort is less clear. This vignette
+reproduces Figure 1C/D of Jalal and Burke (2020) and looks at the same data
+in a few other ways.
+
+```{r setup}
+library(hexamap)
+```
+
+## The data
+
+`overdose_white_men` has accidental drug overdose death rates (underlying
+cause ICD-10 X40-X44) per 100,000 white men by single year of age (15-70)
+and calendar year (1999-2018), from CDC WONDER.
+`overdose_white_men_long` has the same data with deaths, population and a
+reliability flag:
+
+```{r data}
+head(overdose_white_men_long)
+table(overdose_white_men_long$flag)
+```
+
+CDC WONDER considers rates based on fewer than 20 deaths unreliable, and its
+data use restrictions do not allow publishing counts of 9 or fewer deaths.
+The 63 rates based on 10 to 19 deaths were computed from the deaths and
+population; the 20 cells with 9 or fewer deaths are `NA`, and are shown in
+grey below. They are at ages 15-16 and, before 2006, at ages 61-70.
+
+## Lexis diagram and hexamap
+
+The paper's Figure 1C/D, with the same color limits (0 to 40 deaths per
+100,000) and the paper's jet palette:
+
+```{r figure-1, fig.height = 6.5, fig.alt = "Lexis diagram and hexamap of drug overdose death rates among white men, ages 15 to 70, 1999 to 2018. Rates rise sharply after 2015, mainly between ages 25 and 55, and are low below age 18."}
+par(mfrow = c(1, 2))
+lexis_map(overdose_white_men, colorbar_range = c(0, 40), legend = FALSE,
+          title_text = "C. Lexis diagram")
+hexamap(overdose_white_men, colorbar_range = c(0, 40),
+        scale_units = "Deaths per\n100,000", na_label = "Suppressed",
+        title_text = "D. Hexamap")
+```
+
+Both show the period pattern (the rise since 2015) and the age pattern (low
+rates below age 18). The cohort pattern is easier to follow on the hexamap.
+
+## Following a cohort
+
+The paper compares the men born in 1975 with men aged 25. Both lines span
+exactly 20 years, from 1999 to 2018:
+
+```{r cohort-1975, fig.height = 6.5, fig.alt = "Lexis diagram and hexamap with the 1975 birth cohort and age 25 highlighted in white. On the Lexis diagram the cohort line is longer and drawn at 45 degrees; on the hexamap both lines have the same length."}
+par(mfrow = c(1, 2))
+highlight <- list(cohort = 1975, age = 25, col = "white", lwd = 2)
+lexis_map(overdose_white_men, colorbar_range = c(0, 40), legend = FALSE,
+          highlight = highlight, title_text = "Lexis diagram")
+hexamap(overdose_white_men, colorbar_range = c(0, 40), legend = FALSE,
+        highlight = highlight, title_text = "Hexamap")
+```
+
+On the Lexis diagram the 1975 cohort line is about 41% longer than the
+age-25 line, so the cohort's increase seems slower than the increase at age
+25. On the hexamap the two lines have the same length, which shows that the
+two increases are similar.
+
+The rates along the two lines:
+
+```{r cohort-table}
+d <- overdose_white_men_long
+cohort_1975 <- d[d$year - d$age == 1975, c("year", "age", "rate")]
+age_25 <- d[d$age == 25, c("year", "age", "rate")]
+merge(cohort_1975, age_25, by = "year", suffixes = c("_cohort_1975", "_age_25"))
+```
+
+## Relative change
+
+A rate ratio relative to a reference year removes the age pattern and leaves
+the changes over time. With a log scale and `midpoint = 1`, increases and
+decreases of the same size get colors of the same strength:
+
+```{r ratio, fig.height = 6.5, fig.alt = "Hexamap of rate ratios relative to 2005 on a diverging log scale. Ratios rise above 1 after 2005 at most ages, most strongly among men in their sixties, and fall below 1 for teenagers."}
+ratio <- overdose_white_men / overdose_white_men[, "2005"]
+hexamap(ratio, colorbar_scale = "log", midpoint = 1,
+        scale_units = "Rate ratio\nvs 2005", na_label = "Suppressed",
+        highlight = list(cohort = 1975, col = "black"))
+```
+
+By 2018, rates at most ages were 2 to 3 times their 2005 level, and 5 to 9
+times among men in their sixties, while they fell for teenagers:
+
+```{r ratio-2018}
+round(summary(ratio[, "2018"]), 2)
+round(ratio[c("17", "30", "45", "65"), "2018"], 1)
+```
+
+## Spreading the colors
+
+The highest rates (above 60 per 100,000) are much higher than most. A
+quantile scale gives each color the same number of cells, which shows
+differences among the lower rates:
+
+```{r quantile, fig.height = 6.5, fig.alt = "Hexamap of the overdose rates on a quantile color scale, with percentiles on the left of the colorbar and rates on the right."}
+hexamap(overdose_white_men, colorbar_scale = "quantile",
+        scale_units = "Deaths per 100,000", na_label = "Suppressed")
+```
+
+## Reference
+
+Jalal H, Burke DS. Hexamaps for age-period-cohort data visualization and
+implementation in R. *Epidemiology*. 2020;31(6):e47-e49.
+<https://doi.org/10.1097/EDE.0000000000001236>
+
+Centers for Disease Control and Prevention, National Center for Health
+Statistics. Multiple Cause of Death 1999-2018 on CDC WONDER Online Database.
+<https://wonder.cdc.gov/mcd-icd10.html>

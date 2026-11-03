@@ -1,3 +1,16 @@
+# hexamap 0.8.1
+
+## Documentation
+
+* New vignettes:
+  * `vignette("hexamap")`: getting started (data, isolines, colors,
+    missing cells, layouts, Lexis diagrams, ggplot2, saving figures).
+  * `vignette("apc-patterns")`: age, period and cohort effects alone, in
+    pairs and all together, on Lexis diagrams and hexamaps, and the
+    identification problem.
+  * `vignette("overdose")`: Figure 1C/D of Jalal and Burke (2020), the 1975
+    cohort comparison, rate ratios and quantile scales.
+
 # hexamap 0.8.0
 
 ## Documentation
