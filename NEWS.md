@@ -1,3 +1,13 @@
+# hexamap 0.9.0
+
+Release candidate for the first CRAN release.
+
+* Spelling checked (`inst/WORDLIST`, `Language: en-US`) with a spelling test.
+* New visual regression tests with 'vdiffr' for base and ggplot2 output.
+* Test coverage is 98.9%.
+* Smaller vignette figures, to keep the installed package small.
+* Added `cran-comments.md`.
+
 # hexamap 0.8.1
 
 ## Documentation

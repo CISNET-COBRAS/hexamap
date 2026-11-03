@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
   fig.width = 7,
   fig.height = 5,
   fig.align = "center",
-  dpi = 96,
+  dpi = 72,
   fig.retina = 1
 )
 ```
@@ -108,7 +108,7 @@ isolines.
 - `labels` changes the label prefixes.
 - `highlight` draws chosen ages, periods or cohorts as highlighted lines.
 
-```{r isolines, fig.height = 6.5, fig.alt = "Hexamap with isolines every 5 years labelled with full words, and the 1975 birth cohort and the year 2015 highlighted in white."}
+```{r isolines, fig.height = 6.5, fig.alt = "Hexamap with isolines every 5 years labeled with full words, and the 1975 birth cohort and the year 2015 highlighted in white."}
 hexamap(overdose_white_men,
         isoline_interval = 5,
         labels = c(age = "Age ", period = "", cohort = "Born "),
@@ -153,7 +153,7 @@ hexamap(ratio, colorbar_scale = "log", midpoint = 1,
 ## Missing cells
 
 Cells with `NA` are drawn in `na_color` (light grey by default), with a key
-below the colorbar labelled `na_label`. In `overdose_white_men`, cells with 9
+below the colorbar labeled `na_label`. In `overdose_white_men`, cells with 9
 or fewer deaths are missing because CDC WONDER does not allow publishing
 them. Use `na_color = NA` to leave missing cells blank.
 
