@@ -1,6 +1,6 @@
 Package: hexamap
 Title: Hexagonal Heatmaps for Age-Period-Cohort Data
-Version: 0.7.0
+Version: 0.8.0
 Authors@R: c(
     person("Hawre", "Jalal", , "hjalal@uottawa.ca", role = "aut",
            comment = c(ORCID = "0000-0002-8224-6834")),
@@ -17,6 +17,9 @@ Description: Visualize age-period-cohort (APC) data with hexamaps, a field
     the method described in Jalal and Burke (2020)
     <doi:10.1097/EDE.0000000000001236>.
 License: MIT + file LICENSE
+URL: https://github.com/CISNET-COBRAS/hexamap,
+    https://cisnet-cobras.github.io/hexamap/
+BugReports: https://github.com/CISNET-COBRAS/hexamap/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Depends:
