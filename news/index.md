@@ -1,0 +1,223 @@
+# Changelog
+
+## hexamap 0.8.0
+
+### Documentation
+
+- New README with the motivation for hexamaps, a Lexis-vs-hexamap
+  comparison, the overdose example and a ggplot2 example.
+- New hex sticker (`man/figures/logo.png`), drawn with hexamap itself by
+  `data-raw/hexsticker.R`.
+- `citation("hexamap")` gives the Epidemiology letter and the package.
+- New pkgdown site configuration and GitHub Actions workflow.
+
+## hexamap 0.7.0
+
+### New data
+
+- New datasets `overdose_white_men` (age-by-year matrix of rates) and
+  `overdose_white_men_long` (one row per age and year, with deaths,
+  population and a reliability flag): accidental drug overdose deaths
+  among white men in the United States, ages 15-70, 1999-2018, from CDC
+  WONDER. These are the data of Figure 1C/D in Jalal and Burke (2020).
+  Following the CDC WONDER data use restrictions, counts of 9 or fewer
+  deaths and the rates based on them are not included.
+
+## hexamap 0.6.0
+
+### New features
+
+- New
+  [`gg_hexamap()`](https://cisnet-cobras.github.io/hexamap/reference/gg_hexamap.md)
+  draws hexamaps and Lexis diagrams with ‘ggplot2’ (in Suggests). It
+  returns a ggplot object that can be modified with
+  [`labs()`](https://ggplot2.tidyverse.org/reference/labs.html),
+  [`theme()`](https://ggplot2.tidyverse.org/reference/theme.html) and
+  other ggplot2 functions. A named list of matrices gives one panel per
+  element, with a shared color scale.
+- New
+  [`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+  method for `hexamap_layout` objects.
+- [`hexamap_layout()`](https://cisnet-cobras.github.io/hexamap/reference/hexamap_layout.md)
+  cells gain a `fraction` column with each value’s position along the
+  color scale.
+
+## hexamap 0.5.0
+
+### New features
+
+- New
+  [`lexis_map()`](https://cisnet-cobras.github.io/hexamap/reference/lexis_map.md)
+  draws a traditional Lexis diagram (square tiles, periods on the x
+  axis, ages on the y axis, cohorts on the diagonals) with all the
+  options of
+  [`hexamap()`](https://cisnet-cobras.github.io/hexamap/reference/hexamap.md),
+  for side-by-side comparisons.
+  [`hexamap_layout()`](https://cisnet-cobras.github.io/hexamap/reference/hexamap_layout.md)
+  and
+  [`hexamap()`](https://cisnet-cobras.github.io/hexamap/reference/hexamap.md)
+  gain a `tiles` argument, and
+  [`apc_to_xy()`](https://cisnet-cobras.github.io/hexamap/reference/apc_to_xy.md)
+  accepts `tiles = "square"`.
+- New
+  [`simulate_apc()`](https://cisnet-cobras.github.io/hexamap/reference/simulate_apc.md)
+  generates rates from a log-linear age-period-cohort model, with
+  effects given as functions or vectors and optional Poisson noise.
+- New
+  [`as_apc_matrix()`](https://cisnet-cobras.github.io/hexamap/reference/as_apc_matrix.md)
+  reshapes long data (one row per age-period combination, e.g. from CDC
+  WONDER) into an age-by-period matrix on a regular grid, with `NA` for
+  missing combinations.
+- New
+  [`apc_rates()`](https://cisnet-cobras.github.io/hexamap/reference/apc_rates.md)
+  computes rates from counts and population, with `NA` where the
+  population is zero or missing.
+
+### Changes
+
+- The `hexagon` element of `hexamap_layout` objects is now called
+  `tile`. A new `tiles` element records the tile shape.
+
+## hexamap 0.4.0
+
+### New features
+
+- New `highlight` argument draws chosen ages, periods and/or cohorts as
+  highlighted lines with bold labels, e.g.
+  `highlight = list(cohort = 1975)`. The values need not be isolines.
+  `col` and `lwd` set the line color and width.
+- New `labels` argument sets the prefixes of the isoline labels, e.g.
+  `labels = c(age = "Age ", period = "")`. Names left out keep the
+  defaults `"A: "`, `"P: "` and `"C: "`.
+- New `isolines` argument chooses which isolines to draw.
+- New `title_adj` argument aligns the title and subtitle.
+
+### Changes
+
+- Isolines now fall on round values by default. `isoline_interval` is
+  the smallest round spacing (1, 2, 5, 10, 20, 25, 50, …) that is a
+  multiple of `interval` and gives at most 8 isolines. The first
+  isolines are the first ages and periods that are multiples of it. For
+  the paper’s example (ages 15-70, 1999-2018), the defaults now match
+  the published figure: A: 20-70, P: 2000 and 2010, C: 1930-2000.
+- `label_size` defaults to 0.7 (was 0.5).
+
+## hexamap 0.3.0
+
+### New features
+
+- New
+  [`hexamap_palette()`](https://cisnet-cobras.github.io/hexamap/reference/hexamap_palette.md)
+  returns colors from the “jet” palette of Jalal and Burke (2020) or
+  from any
+  [`grDevices::hcl.pals()`](https://rdrr.io/r/grDevices/palettes.html)
+  palette. Use it via the new `palette` and `n_colors` arguments of
+  [`hexamap()`](https://cisnet-cobras.github.io/hexamap/reference/hexamap.md).
+- New `midpoint` argument for diverging scales, such as rate ratios on a
+  log scale (`midpoint = 1`) or differences (`midpoint = 0`). The color
+  limits are made symmetric around the midpoint, and the default palette
+  becomes the diverging “Blue-Red 3”.
+- Missing cells are drawn in `na_color` (default light grey), with a
+  “Missing” key below the colorbar (`na_label`). Use `na_color = NA` to
+  leave them blank, as before.
+- New `hex_border` and `hex_border_width` arguments.
+
+### Changes
+
+- The default palette remains the paper’s “jet”, now generated by
+  [`hexamap_palette()`](https://cisnet-cobras.github.io/hexamap/reference/hexamap_palette.md).
+  `palette = "viridis"` is a perceptually uniform alternative that is
+  readable by people with color vision deficiencies.
+- Hexagon borders are drawn in each hexagon’s own color by default
+  (`hex_border = "fill"`), which removes the thin white seams that many
+  PDF and PNG viewers show between tiles.
+- Colorbar ticks are now round values within the limits (and the
+  midpoint, if any) on linear and log scales, and every 20th percentile
+  on quantile scales.
+
+## hexamap 0.2.0
+
+### New features
+
+- New
+  [`hexamap_layout()`](https://cisnet-cobras.github.io/hexamap/reference/hexamap_layout.md)
+  computes a hexamap without drawing it: hexagon centers and colors,
+  isolines, color scale and colorbar ticks. Draw it with
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) or use it to
+  build custom graphics.
+  [`hexamap()`](https://cisnet-cobras.github.io/hexamap/reference/hexamap.md)
+  now returns this layout invisibly. Layouts print a short summary.
+- New
+  [`apc_to_xy()`](https://cisnet-cobras.github.io/hexamap/reference/apc_to_xy.md)
+  converts ages and periods to hexamap coordinates, to add points, lines
+  or text to a hexamap.
+- `first_age`, `first_period` and `interval` default to the numeric row
+  (age) and column (period) names of `data`. Age or period names that
+  are unequally spaced, or whose spacing differs from each other, give
+  an error.
+- New `legend` argument turns the colorbar off.
+
+### Changes
+
+- The hexamap, its labels and the colorbar are now sized to fit the
+  current plotting region on any device, so hexamaps can be combined
+  with `par(mfrow = )`. Titles are drawn in the top margin and no longer
+  overlap the period labels.
+- `colorbar_width` is now the width of the colorbar in inches (default
+  0.15). `colorbar_height` is its height as a fraction of the hexamap
+  height (default 0.5).
+- `zoom_factor` is deprecated and ignored.
+- `title_text` and `subtitle_text` default to no title. The subtitle is
+  no longer passed through
+  [`prettyNum()`](https://rdrr.io/r/base/formatc.html), which added
+  thousands separators to years (“1,999”).
+- Hexagons are drawn with a single
+  [`polygon()`](https://rdrr.io/r/graphics/polygon.html) call and
+  isolines with
+  [`segments()`](https://rdrr.io/r/graphics/segments.html), which is
+  faster and gives smaller files.
+
+## hexamap 0.1.2
+
+### Bug fixes
+
+- The colorbar no longer draws shifted, overlapping color blocks
+  (`2:ncol+1` was evaluated as `3:(ncol+1)`).
+- Every palette color can now appear on the hexagons. Previously the top
+  color was never used because `ncol` breaks gave only `ncol - 1` bins.
+- `NA` cells are skipped instead of making the default color range fail
+  with “‘from’ must be a finite number”. Data with no finite values give
+  a clear error.
+- The log color scale no longer fails on zeros: values `<= 0` are drawn
+  in the lowest color, with a warning. A non-positive `colorbar_range`
+  with a log scale gives an error.
+- `colorbar_scale` accepts `"linear"`, `"log"` and `"quantile"` (and the
+  legacy names `"Normal"`, `"Log"`, `"Percentile"`) in any letter case.
+  Unknown names give a clear error instead of “object ‘data_cutpoints’
+  not found”.
+- Colorbar tick labels are correct for palettes of any length (they
+  assumed 100 colors). They now show 3 significant digits, so small
+  rates are no longer rounded to 0.
+- Percentile ticks are only drawn for the quantile scale.
+- [`hexamap()`](https://cisnet-cobras.github.io/hexamap/reference/hexamap.md)
+  restores the graphical parameters it changes.
+- An empty `subtitle_text` is no longer drawn as “NA”.
+- `scale_units` is now displayed above the colorbar, as documented.
+- Inputs are validated with informative errors. Data frames of numeric
+  columns are accepted.
+
+## hexamap 0.1.1
+
+- Added GitHub Actions R CMD check on macOS, Windows and Ubuntu (R
+  release, devel and oldrel-1).
+
+## hexamap 0.1.0
+
+- Initial package skeleton.
+  [`hexamap()`](https://cisnet-cobras.github.io/hexamap/reference/hexamap.md)
+  is the general version of the function from the original scripts; the
+  figure-specific variant (`hexagon_apc_functions.R`) was removed.
+- Added
+  [`create_hexamap()`](https://cisnet-cobras.github.io/hexamap/reference/create_hexamap.md),
+  a wrapper that keeps the code from the Epidemiology (2020) eAppendix
+  working.
