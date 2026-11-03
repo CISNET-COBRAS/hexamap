@@ -1,5 +1,36 @@
 # Changelog
 
+## hexamap 1.0.0
+
+First CRAN release.
+
+- [`hexamap()`](https://cisnet-cobras.github.io/hexamap/reference/hexamap.md)
+  and
+  [`lexis_map()`](https://cisnet-cobras.github.io/hexamap/reference/lexis_map.md)
+  draw hexamaps and Lexis diagrams of age-period-cohort data with base
+  graphics, and
+  [`gg_hexamap()`](https://cisnet-cobras.github.io/hexamap/reference/gg_hexamap.md)
+  and
+  [`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+  with ‘ggplot2’. Options include isolines, labels, highlighted cohorts,
+  palettes, linear, log, quantile and diverging scales, and missing
+  cells.
+- [`hexamap_layout()`](https://cisnet-cobras.github.io/hexamap/reference/hexamap_layout.md)
+  computes a hexamap without drawing it, and
+  [`apc_to_xy()`](https://cisnet-cobras.github.io/hexamap/reference/apc_to_xy.md)
+  converts ages and periods to plot coordinates.
+- [`simulate_apc()`](https://cisnet-cobras.github.io/hexamap/reference/simulate_apc.md),
+  [`as_apc_matrix()`](https://cisnet-cobras.github.io/hexamap/reference/as_apc_matrix.md)
+  and
+  [`apc_rates()`](https://cisnet-cobras.github.io/hexamap/reference/apc_rates.md)
+  simulate and prepare age-by-period data.
+- `overdose_white_men` contains the CDC WONDER data of Jalal and Burke
+  (2020).
+- [`create_hexamap()`](https://cisnet-cobras.github.io/hexamap/reference/create_hexamap.md)
+  keeps the code of the paper’s eAppendix working.
+- Three vignettes: getting started, reading APC patterns, and the
+  overdose case study.
+
 ## hexamap 0.9.0
 
 Release candidate for the first CRAN release.

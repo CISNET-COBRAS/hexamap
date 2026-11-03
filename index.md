@@ -41,8 +41,14 @@ diagonal in both.](reference/figures/README-why-1.png)
 
 ## Installation
 
-hexamap will be on CRAN soon. In the meantime, install the development
-version from GitHub:
+Install hexamap from CRAN:
+
+``` r
+
+install.packages("hexamap")
+```
+
+or the development version from GitHub:
 
 ``` r
 
