@@ -117,6 +117,14 @@ gg_hexamap(list(`Cohort effect` = rates, `Period effect` = period),
 | `hexamap_palette()` | Jet (as in the paper), viridis and other palettes |
 | `apc_to_xy()` | Convert ages and periods to plot coordinates for annotations |
 
+## Learn more
+
+- `vignette("hexamap")`: getting started, from data preparation to
+  isolines, colors, layouts and ggplot2.
+- `vignette("apc-patterns")`: what age, period and cohort effects look like,
+  alone and combined, on hexamaps and Lexis diagrams.
+- `vignette("overdose")`: the drug overdose example of the paper.
+
 ## Citation
 
 If you use hexamap, please cite the paper:
